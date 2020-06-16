@@ -1,0 +1,56 @@
+From 6fa94f84f4440c7757e11d86706864f54279fe9e Mon Sep 17 00:00:00 2001
+From: Matthew <mkilpatr@FNAL.GOV>
+Date: Mon, 25 Nov 2019 12:05:08 -0600
+Subject: [PATCH] Add change to run on long strings
+
+---
+ python/ModelTools.py | 36 +++++++++++++++++++++++++++++++++++-
+ 1 file changed, 35 insertions(+), 1 deletion(-)
+
+diff --git a/python/ModelTools.py b/python/ModelTools.py
+index 821726d5d8b..51c407f060e 100644
+--- a/python/ModelTools.py
++++ b/python/ModelTools.py
+@@ -82,7 +82,41 @@ def doVar(self,vardef):
+         if self.options.bin: self.factory_(vardef);
+         else: self.out.write(vardef+";\n");
+     def doExp(self,name,expression,vars):
+-        if self.options.bin: self.factory_('expr::%s("%s",%s)'%(name,expression,vars));
++        if self.options.bin:
++        if len('expr::%s("%s",%s)'%(name,expression,vars)) > 1000:
++            exp = str(expression).strip('()')
++            exp = exp.split('+')
++            var = str(vars).split(',')
++            strlength = len(var)
++            var1 = ""
++            var2 = ""
++            exp1 = ""
++            exp2 = ""
++            for i in xrange(strlength):
++                index, rate = exp[i].split('*')
++                if i < strlength/2:
++                    if i != (strlength/2 - 1):
++                        var1 += var[i]+","
++                        exp1 += exp[i]+"+"
++                    else:
++                        var1 += var[i]
++                        exp1 += exp[i]
++                else:
++                    if i != (strlength - 1):
++                        var2 += var[i]+","
++                        exp2 += "@"+str(i-strlength/2)+"*"+rate+"+"
++                    else:
++                        var2 += var[i]
++                        exp2 += "@"+str(i-strlength/2)+"*"+rate
++            #print('expr::%s("(%s)",%s)'%(name+'_1',exp1,var1))
++            self.factory_('expr::%s("(%s)",%s)'%(name+'_1',exp1,var1));
++            #print('expr::%s("(%s)",%s)'%(name+'_2',exp2,var2))
++            self.factory_('expr::%s("(%s)",%s)'%(name+'_2',exp2,var2));
++            totalName = name+'_1,'+name+'_2'
++            #print('expr::%s("(@0+@1)",%s)'%(name,totalName))
++            self.factory_('expr::%s("(@0+@1)",%s)'%(name,totalName))
++        else:
++            self.factory_('expr::%s("%s",%s)'%(name,expression,vars));
+         else: self.out.write('%s = expr::%s("%s",%s)'%(name,name,expression,vars)+";\n");
+     def doSet(self,name,vars):
+         if self.options.bin: self.out.defineSet(name,vars)
