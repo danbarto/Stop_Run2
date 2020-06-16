@@ -1,0 +1,30 @@
+# Datacard produced by CombineHarvester with git status: analysis-HIG-16-006-freeze-080416-811-g2782a7c-dirty
+imax    1 number of bins
+jmax    1 number of processes minus 1
+kmax    * number of nuisance parameters
+--------------------------------------------------------------------------------
+shapes * bin_phocr_lm_nb2_lowmtb_lowptisr_highptb12_nj7_MET_pt500toinf bin_phocr_lm_nb2_lowmtb_lowptisr_highptb12_nj7_MET_pt500toinf.root  $PROCESS
+--------------------------------------------------------------------------------
+bin          bin_phocr_lm_nb2_lowmtb_lowptisr_highptb12_nj7_MET_pt500toinf 
+observation  2.0             
+--------------------------------------------------------------------------------
+bin                    bin_phocr_lm_nb2_lowmtb_lowptisr_highptb12_nj7_MET_pt500toinf bin_phocr_lm_nb2_lowmtb_lowptisr_highptb12_nj7_MET_pt500toinf 
+process                gjets           otherbkgs       
+process                1               2               
+rate                   0               0.122183        
+--------------------------------------------------------------------------------
+JES            lnN     1/1             1/1             
+PDF_Weight     lnN     1/1             0.750215/1.24978 
+PU_Weight      lnN     1/1             0.920354/1.0863 
+Prefire_Weight lnN     1/1             1.03018/0.970327 
+b              lnN     1/1             0.968718/1.02904 
+eff_fatjet_vet lnN     1/1             1.08986/0.913169 
+eff_restoptag  lnN     1/1             1.0141/0.986044 
+eff_toptag     lnN     1/1             1/1             
+eff_wtag       lnN     1/1             1/1             
+ivfunc         lnN     1/1             1/1             
+lumi           lnN     1.018           1.018           
+photon_sf      lnN     1/1             0.956827/1.04317 
+photon_trig    lnN     1/1             0.989545/1.00887 
+R_bin_phocr_lm_nb2_lowmtb_lowptisr_highptb12_nj7_MET_pt500toinf rateParam  *          gjets      1  [0.01,5]
+* autoMCStats 0

@@ -1,0 +1,47 @@
+# Datacard produced by CombineHarvester with git status: analysis-HIG-16-006-freeze-080416-811-g2782a7c-dirty
+imax    1 number of bins
+jmax    1 number of processes minus 1
+kmax    * number of nuisance parameters
+--------------------------------------------------------------------------------
+shapes * bin_lepcr_hm_nb1_highmtb_ht1000to1300_MET_pt650toinf bin_lepcr_hm_nb1_highmtb_ht1000to1300_MET_pt650toinf.root  $PROCESS
+--------------------------------------------------------------------------------
+bin          bin_lepcr_hm_nb1_highmtb_ht1000to1300_MET_pt650toinf 
+observation  32.0            
+--------------------------------------------------------------------------------
+bin                           bin_lepcr_hm_nb1_highmtb_ht1000to1300_MET_pt650toinf bin_lepcr_hm_nb1_highmtb_ht1000to1300_MET_pt650toinf 
+process                       signal          ttbarplusw      
+process                       0               1               
+rate                          0.222756        32.419          
+--------------------------------------------------------------------------------
+ISR_Weight            lnN     0.827863/1.08699 -               
+ISR_Weight_background lnN     -               0.993187/1.00432 
+JES                   lnN     0.978814/1.02164 0.951628/1.02741 
+LHESigScale           lnN     0.987677/1.01406 -               
+MET_Unc               lnN     0.877634/1.13943 -               
+PDF_Weight            lnN     -               0.946885/1.05311 
+PU_Weight             lnN     1.05522/0.944065 0.983632/1.01518 
+PowhegOverMG          lnN     -               0.956433/1.04357 
+Prefire_Weight        lnN     1.00168/0.998242 1.00432/0.995648 
+b                     lnN     1.01486/0.983992 0.973003/1.02585 
+b_fast                lnN     1.00502/0.994954 -               
+eff_densetoptag       lnN     0.976437/1.02828 0.996731/1.00392 
+eff_e                 lnN     0.983318/1.01668 0.984768/1.01523 
+eff_fatjet_vet        lnN     1.05981/0.941866 1.0129/0.987227 
+eff_fatjet_veto_fast  lnN     1.04141/0.959561 -               
+eff_restoptag         lnN     0.995409/1.00461 0.992658/1.00735 
+eff_restoptag_fast    lnN     0.999099/1.00089 -               
+eff_tau               lnN     0.999391/1.00061 1/1             
+eff_toptag            lnN     0.959984/1.04091 0.989809/1.01019 
+eff_toptag_fast       lnN     0.980453/1.01979 -               
+eff_wtag              lnN     0.994333/1.00567 0.998143/1.00186 
+eff_wtag_fast         lnN     0.997558/1.00244 -               
+err_mu                lnN     0.99674/1.00326 0.998621/1.00138 
+ivfunc                lnN     -               1/1             
+lumi                  lnN     1.018           1.018           
+metres                lnN     0.992213/1.00785 1.00044/0.999561 
+toppt                 lnN     -               0.981379/1.01369 
+trigger_err           lnN     0.997571/1.00171 0.997602/1.00167 
+xsecNorm_ttbar        lnN     -               0.962125/1.03788 
+xsecNorm_wjets        lnN     -               0.929543/1.07046 
+R_bin_lepcr_hm_nb1_highmtb_ht1000to1300_MET_pt650toinf rateParam  *          ttbarplusw 1  [0.01,5]
+* autoMCStats 0

@@ -1,0 +1,70 @@
+# Datacard produced by CombineHarvester with git status: analysis-HIG-16-006-freeze-080416-811-g2782a7c-dirty
+imax    1 number of bins
+jmax    5 number of processes minus 1
+kmax    * number of nuisance parameters
+--------------------------------------------------------------------------------
+shapes * bin_hm_nb3_highmtb_nt0_nrt1_nw0_htgt1500_MET_pt350to550 bin_hm_nb3_highmtb_nt0_nrt1_nw0_htgt1500_MET_pt350to550.root  $PROCESS
+--------------------------------------------------------------------------------
+bin          bin_hm_nb3_highmtb_nt0_nrt1_nw0_htgt1500_MET_pt350to550 
+observation  1.0             
+--------------------------------------------------------------------------------
+bin                              bin_hm_nb3_highmtb_nt0_nrt1_nw0_htgt1500_MET_pt350to550 bin_hm_nb3_highmtb_nt0_nrt1_nw0_htgt1500_MET_pt350to550 bin_hm_nb3_highmtb_nt0_nrt1_nw0_htgt1500_MET_pt350to550 bin_hm_nb3_highmtb_nt0_nrt1_nw0_htgt1500_MET_pt350to550 bin_hm_nb3_highmtb_nt0_nrt1_nw0_htgt1500_MET_pt350to550 bin_hm_nb3_highmtb_nt0_nrt1_nw0_htgt1500_MET_pt350to550 
+process                          signal          ttbarplusw      znunu           qcd             TTZ             Rare            
+process                          0               1               2               3               4               5               
+rate                             0.0348467       1               1               1               0.0256017       1e-06           
+--------------------------------------------------------------------------------
+ISR_Weight               lnN     0.776458/1.11304 -               -               -               -               -               
+ISR_Weight_background    lnN     -               0.979208/1.00802 -               0.999962/1.00002 -               -               
+JES                      lnN     1.08584/0.849284 0.925889/1.06101 0.368791/1      0.884082/2.94803 0.885961/1.12872 0.01/2          
+LHEScale                 lnN     -               -               -               -               0.889409/1.13033 0.01/2          
+LHESigScale              lnN     0.990945/1.00944 -               -               -               -               -               
+MET_Unc                  lnN     1.3761/0.915595 -               -               -               -               -               
+PDF_Weight               lnN     -               0.889639/1.12405 0.96613/1.03387 1.03822/0.963496 0.980909/1.01909 0.01/2          
+PU_Weight                lnN     0.925916/1.03235 0.970407/1.02559 1.126/0.908167  1.00378/0.969424 1.01951/0.967376 0.01/2          
+PowhegOverMG             lnN     -               0.883146/1.11685 -               0.997435        -               -               
+Prefire_Weight           lnN     1.01017/0.98986 1.0039/0.996026 1.00124/0.998759 0.999909/1.00009 1.0007/0.999417 0.01/2          
+QCD_MET_residual         lnN     -               -               -               1               -               -               
+QCD_jet_resp             lnN     -               -               -               0.941092        -               -               
+QCD_smear                lnN     -               -               -               0.940256        -               -               
+QCD_trigger_err          lnN     -               -               -               1.10123         -               -               
+TTZ_SF                   lnN     -               -               -               -               0.9179/1.0821   -               
+b                        lnN     0.884215/1.12669 0.912005/1.09224 0.885006/1.11693 0.884082/1.21226 0.914357/1.09279 0.01/2          
+b_fast                   lnN     0.980001/1.02036 -               -               -               -               -               
+eff_densetoptag          lnN     1/1             1/1             -               -               -               0.01/2          
+eff_e                    lnN     1.00626/0.993778 1.0218/0.978204 -               -               -               -               
+eff_fatjet_vet           lnN     1.09999/0.904099 1.03343/0.96735 1.00973/0.990344 1.00138/0.99861 1.09623/0.908321 0.01/2          
+eff_fatjet_veto_fast     lnN     1.05425/0.947022 -               -               -               -               -               
+eff_restoptag            lnN     1.00356/0.996364 0.885663/1.11006 0.775493/1.22437 0.884082/1.29255 0.833805/1.16686 0.01/2          
+eff_restoptag_fast       lnN     0.96301/1.03583 -               -               -               -               -               
+eff_tau                  lnN     1/1             1.02383/0.983141 -               -               -               -               
+eff_toptag               lnN     -               1/1             1/1             1.00194/0.99805 -               0.01/2          
+eff_wtag                 lnN     -               1/1             1/1             1.00063/0.999368 -               0.01/2          
+err_mu                   lnN     1.00114/0.998864 1.006/0.993995  -               -               -               -               
+ivfunc                   lnN     -               1/1             1/1             1.00237/0.997614 -               -               
+lumi                     lnN     1.018           1.018           1.018           1.018           1.018           0.982/1.018     
+metres                   lnN     1/1             0.990643/1.00945 1/1             1.4355/0.884082 1.04202/0.959675 0.01/2          
+rJet_SF_0_2016           lnN     -               -               -               1.00144         -               -               
+rJet_SF_0_2017           lnN     -               -               -               1               -               -               
+rJet_SF_0_2018           lnN     -               -               -               0.976943        -               -               
+rJet_SF_1_2016           lnN     -               -               -               0.999713        -               -               
+rJet_SF_1_2017           lnN     -               -               -               1               -               -               
+rJet_SF_1_2018           lnN     -               -               -               1.00432         -               -               
+rJet_SF_2_2016           lnN     -               -               -               1.00001         -               -               
+rJet_SF_2_2017           lnN     -               -               -               1               -               -               
+rJet_SF_2_2018           lnN     -               -               -               1.00115         -               -               
+rJet_SF_3_2016           lnN     -               -               -               1.00037         -               -               
+rJet_SF_3_2017           lnN     -               -               -               1               -               -               
+rJet_SF_3_2018           lnN     -               -               -               1.00578         -               -               
+rJet_SF_4_2016           lnN     -               -               -               1.00004         -               -               
+rJet_SF_4_2017           lnN     -               -               -               1               -               -               
+rJet_SF_4_2018           lnN     -               -               -               1.00104         -               -               
+toppt                    lnN     -               0.952484/1.03768 -               1.00074/0.999421 -               -               
+trigger_err              lnN     0.99796/1.00176 0.998203/1.00154 0.998265/1.00152 1.00144/0.998592 0.997945/1.00152 0.01/2          
+xsecNorm_ttbar           lnN     -               0.851918/1.14808 -               -               -               -               
+xsecNorm_wjets           lnN     -               0.991875/1.00812 -               -               -               -               
+znunu_rzunc_highdm_NBge2 lnN     -               -               0.86486/1.13514 -               -               -               
+znunu_zgammdiff_highdm   lnN     -               -               0.944905/1.0551 -               -               -               
+R_qcd_bin_hm_nb3_highmtb_nt0_nrt1_nw0_htgt1500_MET_pt350to550 rateParam  *          qcd        (@0*0.014838+@1*0.001982) R_bin_qcdcr_hm_nb3_highmtb_htgt1500_MET_pt350to450,R_bin_qcdcr_hm_nb3_highmtb_htgt1500_MET_pt450to550
+R_ttbarplusw_bin_hm_nb3_highmtb_nt0_nrt1_nw0_htgt1500_MET_pt350to550 rateParam  *          ttbarplusw (@0*0.422117+@1*0.151588) R_bin_lepcr_hm_nb3_highmtb_htgt1500_MET_pt350to450,R_bin_lepcr_hm_nb3_highmtb_htgt1500_MET_pt450to550
+R_znunu_bin_hm_nb3_highmtb_nt0_nrt1_nw0_htgt1500_MET_pt350to550 rateParam  *          znunu      (@0*0.048443+@1*0.025469) R_bin_phocr_hm_nb3_highmtb_htgt1500_MET_pt350to450,R_bin_phocr_hm_nb3_highmtb_htgt1500_MET_pt450to550
+* autoMCStats 0

@@ -1,0 +1,30 @@
+# Datacard produced by CombineHarvester with git status: analysis-HIG-16-006-freeze-080416-811-g2782a7c-dirty
+imax    1 number of bins
+jmax    1 number of processes minus 1
+kmax    * number of nuisance parameters
+--------------------------------------------------------------------------------
+shapes * bin_phocr_lm_nb1_nivf0_lowmtb_highptisr_medptb_MET_pt750toinf bin_phocr_lm_nb1_nivf0_lowmtb_highptisr_medptb_MET_pt750toinf.root  $PROCESS
+--------------------------------------------------------------------------------
+bin          bin_phocr_lm_nb1_nivf0_lowmtb_highptisr_medptb_MET_pt750toinf 
+observation  14.0            
+--------------------------------------------------------------------------------
+bin                    bin_phocr_lm_nb1_nivf0_lowmtb_highptisr_medptb_MET_pt750toinf bin_phocr_lm_nb1_nivf0_lowmtb_highptisr_medptb_MET_pt750toinf 
+process                gjets           otherbkgs       
+process                1               2               
+rate                   10.0012         1.40461         
+--------------------------------------------------------------------------------
+JES            lnN     0.98801/1.01214 1/0.999814      
+PDF_Weight     lnN     0.946023/1.05398 0.988735/1.01126 
+PU_Weight      lnN     1.03622/0.969238 1.09156/0.910723 
+Prefire_Weight lnN     1.00163/0.998139 1.00002/0.999982 
+b              lnN     0.990926/1.00871 0.988783/1.01115 
+eff_fatjet_vet lnN     1.00647/0.993557 1.00529/0.994722 
+eff_restoptag  lnN     1.0001/0.999901 1.00065/0.999364 
+eff_toptag     lnN     1/1             1/1             
+eff_wtag       lnN     1/1             1/1             
+ivfunc         lnN     1/1             1/1             
+lumi           lnN     1.018           1.018           
+photon_sf      lnN     0.925333/1.07467 0.946897/1.0531 
+photon_trig    lnN     0.983989/1.01244 0.984431/1.01172 
+R_bin_phocr_lm_nb1_nivf0_lowmtb_highptisr_medptb_MET_pt750toinf rateParam  *          gjets      1  [0.01,5]
+* autoMCStats 0
