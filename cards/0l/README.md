@@ -12,8 +12,15 @@ combine --saveWorkspace -M AsymptoticLimits --rMin -10 --rMax 10 combinedCard.tx
 
 Obtained standalone limits:
 ```
+ -- AsymptoticLimits ( CLs ) --
+Observed Limit: r < 4.4361
+Expected  2.5%: r < 0.1401
+Expected 16.0%: r < 0.1966
+Expected 50.0%: r < 0.2939
+Expected 84.0%: r < 0.4592
+Expected 97.5%: r < 0.7071
 
-
+Done in 75.87 min (cpu), 75.89 min (real)
 ```
 
 ## Card details
