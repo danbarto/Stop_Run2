@@ -55,4 +55,4 @@ TTJets_norm extArg 1 [0,10]
 
 multiBoson_norm_Bin0 rateParam Bin0 multiBoson (@0*1) multiBoson_norm
 multiBoson_norm extArg 1 [0.6,1.4]
-* autoMCStats 0 
+* autoMCStats 0
