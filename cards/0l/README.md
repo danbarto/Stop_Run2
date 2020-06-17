@@ -7,7 +7,7 @@ git clone --single-branch --branch SUSYNano19 https://github.com/mkilpatr/HiggsA
 or apply the corresponding [patch](../../longString.patch).
 ```
 combineCards.py T2tt_1052_100/*txt > T2tt_1052_100.txt
-combine --saveWorkspace -M AsymptoticLimits --rMin -10 --rMax 10 combinedCard.txt
+combine --saveWorkspace -M AsymptoticLimits --rMin -10 --rMax 10 T2tt_1052_100.txt
 ```
 
 Obtained standalone limits:
