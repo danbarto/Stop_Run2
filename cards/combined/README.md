@@ -3,8 +3,7 @@
 ## Commands
 
 ```
-combineCards.py dc_1l=datacard_std_T2tt_1050_100.txt dc_2l=T2tt_1052_100_combination_shapeCard.txt > datacard_combined_T2tt_1050_100.txt
-combineCards.py dc_0l=T2tt_1052_100.txt dc_1l=datacard_std_T2tt_1050_100.txt dc_2l=T2tt_1052_100_combination_shapeCard.txt > datacard_combined_T2tt_1050_100.txt
+combineCards.py dc_0l=../0l/T2tt_1052_100.txt dc_1l=datacard_std_T2tt_1050_100.txt dc_2l=T2tt_1052_100_combination_shapeCard.txt > datacard_combined_T2tt_1050_100.txt
 combine --saveWorkspace -M AsymptoticLimits --rMin -10 --rMax 10 --cminDefaultMinimizerStrategy 0 datacard_combined_T2tt_1050_100.txt
 ```
 
