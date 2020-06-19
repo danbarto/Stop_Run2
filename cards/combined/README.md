@@ -21,3 +21,50 @@ Expected 97.5%: r < 0.4901
 
 The 0l analysis seems to be very sensitive to the value rMin/rMax => need to follow up.
 
+## Correlations
+
+### Nuisances
+
+For the time being we use stop-0l nuisance names in the combination.
+
+| Stop-0l               | Stop-1l               | Stop-2l       | comment |
+| -------               | -------               | -------       | ----------- |
+| ISR_Weight            | ISRSystsignal         | isr           | ISR, signal |
+| ISR_Weight_background | ISR16SystBG           | n/a           | ISR, background |
+| JES                   | jesSystBG             | JEC           | JES for signal in 1l missing |
+| LHEScale              | q2Syst                | n/a           | stop-2l has ttZ and ttbar scale uncertainty decorrelated |
+| LHESigScale           | n/a                   | scale         | stop-1l has all scale variations correlated |
+| MET_Unc               | SigGenMETunc          | FSmet         | gen/reco averaging for FastSim |
+| PDF_Weight            | pdfSystBG             | PDF           | PDF (Bkg only) |
+| PU_Weight             | pileupSyst            | PU            | |
+| Prefire_Weight        | L1prefireSyst         | L1prefire     | L1 prefire |
+| b                     | bTagEffHFSyst         | SFb           | b-tag, just one nuisance in stop-0l (no separate mistag) |
+| b_fast                | bTagFSEffSystsignal   | btagFS        | b-tag FastSim |
+| eff_restoptag         | resttagSFSyst         | n/a           | resolved top tag |
+| eff_toptag            | merttagSFSyst         | n/a           | merged top tag |
+| lumi                  | LumiSyst              | Lumi          | integrated luminosity |
+| toppt                 | n/a                   | topPt         | top pT reweighting |
+
+### Processes
+
+Correlated processes (except signal, which is of course correlated)
+
+| Stop-0l               | Stop-1l               | Stop-2l       | comment |
+| -------               | -------               | -------       | ----------- |
+| TTZ                   | n/a                   | TTZDL         | deliberately decorrelated because ttZ CR included in stop-2l fit |
+| znunu                 | znunu                 | n/a           | |
+| Rare                  | n/a                   | TTXNoZ        | not yet correlated. should it be? |
+| ttbarplusw            | n/a                   | n/a           | lost lepton. correlate with 1lW or 1ltop from stop-1l? |
+| qcd                   | n/a                   | n/a           | |
+| n/a                   | 1lW                   | n/a           | see above |
+| n/a                   | 2l                    | n/a           | lost lepton. correlate with TTJets from stop-2l? |
+| n/a                   | 1ltop                 | n/a           | see above |
+| n/a                   | n/a                   | TTJets        | ttbar/single t, 2l |
+| n/a                   | n/a                   | DY            | Z->ll |
+| n/a                   | n/a                   | multiboson    | VV/VVV |
+
+### Open uncertainties
+- b-tagging: LF and HF seperate or combined?
+- lepton SFs
+- LHEscale
+- correlate signal and bkg JES (1l)
