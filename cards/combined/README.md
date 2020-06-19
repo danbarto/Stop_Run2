@@ -8,16 +8,18 @@ combineCards.py dc_0l=T2tt_1052_100.txt dc_1l=datacard_std_T2tt_1050_100.txt dc_
 combine --saveWorkspace -M AsymptoticLimits --rMin -10 --rMax 10 --cminDefaultMinimizerStrategy 0 datacard_combined_T2tt_1050_100.txt
 ```
 
-First attempt without correlating nuisances or background processes:
+First attempt correlations as described below:
 ```
  -- AsymptoticLimits ( CLs ) --
-Observed Limit: r < 3.1840
-Expected  2.5%: r < 0.1165
-Expected 16.0%: r < 0.1595
-Expected 50.0%: r < 0.2313
-Expected 84.0%: r < 0.3419
-Expected 97.5%: r < 0.4901
+ -- AsymptoticLimits ( CLs ) --
+Observed Limit: r < 0.2078
+Expected  2.5%: r < 0.1133
+Expected 16.0%: r < 0.1558
+Expected 50.0%: r < 0.2266
+Expected 84.0%: r < 0.3376
+Expected 97.5%: r < 0.4858
 ```
+More than 20% better than stop-0l alone.
 
 ## Correlations
 
