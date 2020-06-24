@@ -1,0 +1,3 @@
+[submodule "workflow/ProjectMetis"]
+	path = workflow/ProjectMetis
+	url = https://github.com/danbarto/ProjectMetis.git
