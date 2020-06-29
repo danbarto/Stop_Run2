@@ -48,7 +48,9 @@ eval `scramv1 runtime -sh`
 
 
 # checkout the package
-git clone https://github.com/cms-analysis/HiggsAnalysis-CombinedLimit.git HiggsAnalysis/CombinedLimit
+#git clone https://github.com/cms-analysis/HiggsAnalysis-CombinedLimit.git HiggsAnalysis/CombinedLimit
+git clone --single-branch --branch SUSYNano19 https://github.com/mkilpatr/HiggsAnalysis-CombinedLimit.git HiggsAnalysis/CombinedLimit
+
 cd HiggsAnalysis/CombinedLimit
 git fetch origin
 git checkout v8.0.1
@@ -66,6 +68,28 @@ mv higgsCombineTest.AsymptoticLimits.mH120.root ${MODELPOINT}_1.root
 mkdir -p ${OUTPUTDIR}
 #echo cp ${MODELPOINT}.root ${OUTPUTDIR}/${MODELPOINT}.root
 #cp ${MODELPOINT}.root ${OUTPUTDIR}/${MODELPOINT}.root
+
+# If GetEntry() returns -1, then there was an I/O problem, so we will delete it
+python << EOL
+import ROOT as r
+import os
+import traceback
+foundBad = False
+try:
+    f = r.TFile.Open("${MODELPOINT}_1.root")
+    t = f.Get("limit")
+    if t.GetEntries() < 1: foundBad = True
+except Exception as ex:
+    msg = traceback.format_exc()
+    print "Encounter error during SweepRoot:"
+    print msg
+    foundBad = True
+if foundBad:
+    print "[RSR] removing output file because it does not deserve to live"
+    os.system("rm ${MODELPOINT}_1.root")
+else:
+    print "[RSR] passed the rigorous sweeproot"
+EOL
 
 export LD_PRELOAD=/usr/lib64/gfal2-plugins//libgfal_plugin_xrootd.so
 gfal-copy -p -f -t 4200 --verbose file://`pwd`/${MODELPOINT}_1.root gsiftp://gftp.t2.ucsd.edu${OUTPUTDIR}/${MODELPOINT}_1.root --checksum ADLER32

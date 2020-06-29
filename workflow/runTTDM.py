@@ -38,6 +38,8 @@ stop_1l_cards = glob.glob(os.path.abspath('./cards/TTbarDM/1l/*.txt'))
 
 signals = [ {'name':'_'.join(s.replace('.txt','').split('/')[-1].split('_')[3:6]), '1l': s} for s in stop_1l_cards ]
 
+#signals = signals[:1]
+
 for signal in signals:
     sig = signal['name']
     dilep_card = os.path.abspath('./cards/TTbarDM/2l/TTDM_%s_combination_shapeCard.txt'%sig)
