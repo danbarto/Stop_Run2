@@ -1,3 +1,6 @@
 [submodule "workflow/ProjectMetis"]
 	path = workflow/ProjectMetis
 	url = https://github.com/danbarto/ProjectMetis.git
+[submodule "plots/PlotsSMS"]
+	path = plots/PlotsSMS
+	url = https://github.com/danbarto/PlotsSMS
