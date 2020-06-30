@@ -77,10 +77,10 @@ for signal in signals_noDuplicates:
 submit = True
 overwriteTar = True
 
-for signal in signals:
+for nJob, signal in enumerate(signals):
     found = True
     print
-    print signal['name']
+    print "Job %s/%s: %s"%(nJob, len(signals), signal['name'])
     sig     = signal['name']
     mStop   = signal['mStop']
     mLSP    = signal['mLSP']
