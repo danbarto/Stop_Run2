@@ -22,7 +22,17 @@ More than 20% better than stop-0l alone.
 
 ## Correlations
 
-### Nuisances
+### Latest correlation table
+
+:heavy_check_mark: in latest result
+:white_check_mark: in next iteration
+
+| Nuisance      | Correlated         |
+| --------      | ----------         |
+| Pileup        | :heavy_check_mark: |
+| soft b-tagger | :white_check_mark: |
+
+### Nuisance names
 
 For the time being we use stop-0l nuisance names in the combination.
 
