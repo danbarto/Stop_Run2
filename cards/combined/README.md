@@ -24,13 +24,13 @@ More than 20% better than stop-0l alone.
 
 ### Latest correlation table
 
-:heavy_check_mark: in latest result
-:white_check_mark: in next iteration
+:white_check_mark: in latest result
+:grey_exclamation: in next iteration
 
 | Nuisance      | Correlated         |
 | --------      | ----------         |
-| Pileup        | :heavy_check_mark: |
-| soft b-tagger | :white_check_mark: |
+| Pileup        | :white_check_mark: |
+| soft b-tagger | :grey_exclamation: |
 
 ### Nuisance names
 
