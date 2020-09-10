@@ -12,6 +12,7 @@ SCRAM_ARCH=$6
 
 CARDFILE=$7
 MODELPOINT=$8
+LOWMASS=$9
 
 OUTPUTNAME=$(echo $OUTPUTNAME | sed 's/\.root//')
 
@@ -58,10 +59,17 @@ scramv1 b clean; scramv1 b # always make a clean build
 
 cd $MYDIR
 
-combine --saveWorkspace -M AsymptoticLimits --rMin -10 --rMax 10 --cminDefaultMinimizerStrategy 0 $CARDFILE
+if [ ${LOWMASS} == 1 ]
+then
+    echo "Running with rMin/rMax input"
+    combine --saveWorkspace -M AsymptoticLimits --rMin -10 --rMax 10 --cminDefaultMinimizerStrategy 0 $CARDFILE
+    #combine --saveWorkspace -M AsymptoticLimits --rMin -10 --rMax 10 --cminDefaultMinimizerStrategy 0 datacard_combined_${MODELPOINT}.txt
+else
+    echo "Running default combine command"
+    combine --saveWorkspace -M AsymptoticLimits $CARDFILE
+fi
 
 mv higgsCombineTest.AsymptoticLimits.mH120.root ${MODELPOINT}_1.root
-
 
 # Copy back the output file
 
@@ -91,8 +99,12 @@ else:
     print "[RSR] passed the rigorous sweeproot"
 EOL
 
-export LD_PRELOAD=/usr/lib64/gfal2-plugins//libgfal_plugin_xrootd.so
-gfal-copy -p -f -t 4200 --verbose file://`pwd`/${MODELPOINT}_1.root gsiftp://gftp.t2.ucsd.edu${OUTPUTDIR}/${MODELPOINT}_1.root --checksum ADLER32
+#export LD_PRELOAD=/usr/lib64/gfal2-plugins//libgfal_plugin_xrootd.so
+
+echo "Stage-out attempt: gfal-copy -p -f -t 4200 --verbose file://`pwd`/${MODELPOINT}_1.root gsiftp://gftp.t2.ucsd.edu${OUTPUTDIR}/${MODELPOINT}_1.root --checksum ADLER32"
+
+env -i X509_USER_PROXY=${X509_USER_PROXY} gfal-copy -p -f -t 4200 --verbose file://`pwd`/${MODELPOINT}_1.root gsiftp://gftp.t2.ucsd.edu${OUTPUTDIR}/${MODELPOINT}_1.root --checksum ADLER32
+#env -i X509_USER_PROXY=${X509_USER_PROXY} gfal-copy -p -f -t 7200 --verbose --checksum ADLER32 ${COPY_SRC} ${COPY_DEST}
 
 echo "Directory after running"
 

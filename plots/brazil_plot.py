@@ -40,8 +40,8 @@ def getTTDMXSec(spin, mPhi, mChi):
 #    if not s[2] in categories: categories.append(s[2])
 
 #res = pickle.load(file(os.path.join(analysis_results,"fitAll","cardFiles",args.cardDir,"calculatedLimits.pkl")))
-res = pickle.load(file('../workflow/results/TTDM.pkl'))
-resDL = pickle.load(file('../workflow/results/TTDM_DL.pkl'))
+res = pickle.load(file('../workflow/results/TTDM_all.pkl'))
+#resDL = pickle.load(file('../workflow/results/TTDM_DL.pkl'))
 
 if args.scan == 'mPhi':
     scanVar = 'mStop'
@@ -53,7 +53,7 @@ else:
     fixedMass = 100
 
 df = pandas.DataFrame(res)
-dfDL = pandas.DataFrame(resDL)
+#dfDL = pandas.DataFrame(resDL)
 
 #mChi = int(args.mChi)
 tp = args.spin
@@ -61,7 +61,7 @@ tp = args.spin
 print "Filtering: spin %s fixedMass %s fixedVar %s scanVar %s"%(tp, fixedMass, fixedVar, scanVar)
 
 filteredResults = df[((df['spin']==tp)&(df[fixedVar]==fixedMass))].sort_values(by=scanVar)
-filteredResultsDL = dfDL[((dfDL['spin']==tp.replace('pseudo','pseudoscalar'))&(dfDL[fixedVar]==fixedMass))].sort_values(by=scanVar)
+#filteredResultsDL = dfDL[((dfDL['spin']==tp.replace('pseudo','pseudoscalar'))&(dfDL[fixedVar]==fixedMass))].sort_values(by=scanVar)
 
 mass        = []
 obs         = []
@@ -69,6 +69,8 @@ obsUp       = []
 obsDown     = []
 exp         = []
 expDL       = []
+expSL       = []
+expZL       = []
 exp1Up      = []
 exp2Up      = []
 exp1Down    = []
@@ -91,7 +93,7 @@ for s in filteredResults[scanVar].tolist():
         mPhi = s
     try:
         tmp = filteredResults[filteredResults[scanVar]==s]#['0.500']
-        tmpDL = filteredResultsDL[filteredResultsDL[scanVar]==s]#['0.500']
+        #tmpDL = filteredResultsDL[filteredResultsDL[scanVar]==s]#['0.500']
         if args.xsec:
             xsec = float(getTTDMXSec(tp.replace('pseudo','pseudoscalar'), int(mChi), int(mPhi))['xsec']) # replacement needed for compatibilty with yaml file
             print xsec, mPhi, mChi
@@ -103,20 +105,22 @@ for s in filteredResults[scanVar].tolist():
         xsecs.append(xsec)
 
         # expected line and bands
-        exp.append(xsec*float(tmp['0.500']))
+        exp.append(xsec*float(tmp['combined_0.500']))
         try:
-            expDL.append(xsec*float(tmpDL['0.500']))
+            expDL.append(xsec*float(tmp['2l_0.500']))
+            expSL.append(xsec*float(tmp['1l_0.500']))
+            expZL.append(xsec*float(tmp['0l_0.500']))
         except:
             pass
-        exp1Up.append(xsec*(float(tmp['0.840']) - float(tmp['0.500'])))
-        exp2Up.append(xsec*(float(tmp['0.975']) - float(tmp['0.500'])))
-        exp1Down.append(xsec*(float(tmp['0.500']) - float(tmp['0.160'])))
-        exp2Down.append(xsec*(float(tmp['0.500']) - float(tmp['0.025'])))
+        exp1Up.append(xsec*(float(tmp['combined_0.840']) - float(tmp['combined_0.500'])))
+        exp2Up.append(xsec*(float(tmp['combined_0.975']) - float(tmp['combined_0.500'])))
+        exp1Down.append(xsec*(float(tmp['combined_0.500']) - float(tmp['combined_0.160'])))
+        exp2Down.append(xsec*(float(tmp['combined_0.500']) - float(tmp['combined_0.025'])))
 
         # observed line and theory uncertainty band
-        obs.append(xsec*(float(tmp['-1.000'])))
-        obsUp.append(xsec*(float(tmp['-1.000']))*0.3)
-        obsDown.append(xsec*(float(tmp['-1.000']))*0.3)
+        obs.append(xsec*(float(tmp['combined_-1.000'])))
+        obsUp.append(xsec*(float(tmp['combined_-1.000']))*0.3)
+        obsDown.append(xsec*(float(tmp['combined_-1.000']))*0.3)
 
         #obsUp.append(xsec*res[(s[0],s[1],s[2])]['-1.000']*math.sqrt(0.3**2 + (xSecDM_.getXSec(tp,s[1],s[0],sigma=1)/xSecDM_.getXSec(tp,s[1],s[0]) - 1)**2))
         #obsDown.append(xsec*res[(s[0],s[1],s[2])]['-1.000']*math.sqrt(0.3**2 + (1 - xSecDM_.getXSec(tp,s[1],s[0],sigma=-1)/xSecDM_.getXSec(tp,s[1],s[0]))**2))
@@ -136,6 +140,8 @@ a_obsUp     = array('d',obsUp)
 a_obsDown   = array('d',obsDown)
 a_exp       = array('d',exp) 
 a_expDL     = array('d',expDL) 
+a_expSL     = array('d',expSL) 
+a_expZL     = array('d',expZL) 
 a_exp1Up    = array('d',exp1Up) 
 a_exp2Up    = array('d',exp2Up) 
 a_exp1Down  = array('d',exp1Down) 
@@ -147,6 +153,8 @@ exp2Sigma   = ROOT.TGraphAsymmErrors(len(zeros), a_mass, a_exp, a_zeros, a_zeros
 exp1Sigma   = ROOT.TGraphAsymmErrors(len(zeros), a_mass, a_exp, a_zeros, a_zeros, a_exp1Down, a_exp1Up)
 exp         = ROOT.TGraphAsymmErrors(len(zeros), a_mass, a_exp, a_zeros, a_zeros, a_zeros, a_zeros)
 expDL       = ROOT.TGraphAsymmErrors(len(zeros), a_mass, a_expDL, a_zeros, a_zeros, a_zeros, a_zeros)
+expSL       = ROOT.TGraphAsymmErrors(len(zeros), a_mass, a_expSL, a_zeros, a_zeros, a_zeros, a_zeros)
+expZL       = ROOT.TGraphAsymmErrors(len(zeros), a_mass, a_expZL, a_zeros, a_zeros, a_zeros, a_zeros)
 obs         = ROOT.TGraphAsymmErrors(len(zeros), a_mass, a_obs, a_zeros, a_zeros, a_zeros, a_zeros)
 obs1Sigma   = ROOT.TGraphAsymmErrors(len(zeros), a_mass, a_obs, a_zeros, a_zeros, a_obsDown, a_obsUp)
 xsecs       = ROOT.TGraphAsymmErrors(len(zeros), a_mass, a_xsecs, a_zeros, a_zeros, a_zeros, a_zeros)
@@ -164,6 +172,15 @@ exp.SetLineStyle(2)
 expDL.SetLineWidth(2)
 expDL.SetLineStyle(2)
 expDL.SetLineColor(ROOT.kOrange+1)
+
+expSL.SetLineWidth(2)
+expSL.SetLineStyle(2)
+expSL.SetLineColor(ROOT.kMagenta+1)
+
+expZL.SetLineWidth(2)
+expZL.SetLineStyle(2)
+expZL.SetLineColor(ROOT.kBlue+1)
+
 obs.SetLineWidth(2)
 xsecs.SetLineWidth(2)
 xsecs.SetLineColor(ROOT.kRed+1)
@@ -226,8 +243,10 @@ mg.GetXaxis().SetRangeUser(min_x,max(filteredResults[scanVar].tolist()))
 xsecs.Draw("l same")
 exp.Draw("l same")
 expDL.Draw("l same")
+expSL.Draw("l same")
+expZL.Draw("l same")
 if not args.blinded: obs.Draw("l same")
-leg_size = 0.04 * 6
+leg_size = 0.04 * 8
 
 
 leg = ROOT.TLegend(0.285,0.79-leg_size,0.6,0.79)
@@ -239,8 +258,10 @@ leg.SetTextSize(0.03)
 #leg.AddEntry(obs,"#bf{Observed}",'l')
 leg.AddEntry(obs1Sigma,"#bf{Observed #pm theory uncertainty}")
 leg.AddEntry(xsecs,"#bf{#sigma_{theory}}",'l')
-leg.AddEntry(exp,"#bf{Median expected 1l+2l}",'l')
+leg.AddEntry(exp,"#bf{Median expected}",'l')
 leg.AddEntry(expDL,"#bf{Median expected 2l}",'l')
+leg.AddEntry(expSL,"#bf{Median expected 1l}",'l')
+leg.AddEntry(expZL,"#bf{Median expected 0l}",'l')
 leg.AddEntry(exp1Sigma,"#bf{68% expected}",'f')
 leg.AddEntry(exp2Sigma,"#bf{95% expected}",'f')
 leg.Draw()
@@ -278,7 +299,7 @@ latex1.DrawLatex(0.71,0.96,"#bf{137 fb^{-1} (13 TeV)}")
 
 can.RedrawAxis()
 
-plot_directory = '/home/users/dspitzba/public_html/Stop_Run2/'
+plot_directory = '/home/users/dspitzba/public_html/Stop_Run2/TTDM/'
 
 plot_dir = os.path.join(plot_directory,args.plot_directory)
 if not os.path.isdir(plot_dir):

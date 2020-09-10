@@ -16,15 +16,9 @@ def niceColorPalette(n=255):
 
 from optparse import OptionParser
 parser = OptionParser()
-#parser.add_option("--file",             dest="filename",    default=None,   type="string", action="store",  help="Which file?")
-parser.add_option("--signal",           action='store',     default='T2tt',  choices=["T2tt","TTbarDM","T8bbllnunu_XCha0p5_XSlep0p05", "T8bbllnunu_XCha0p5_XSlep0p5", "T8bbllnunu_XCha0p5_XSlep0p95", "T2bt","T2bW", "T8bbllnunu_XCha0p5_XSlep0p09", "ttHinv"], help="which signal?")
-parser.add_option("--year",             dest="year",   type="int",    action="store",  help="Which year?")
-parser.add_option("--version",          dest="version",  default='v6',  action="store",  help="Which version?")
-parser.add_option("--subDir",           dest="subDir",  default='unblindV1',  action="store",  help="Give some extra name")
+parser.add_option("--signal",           action='store',     default='T2tt',  choices=["T2tt","T2bW"], help="which signal?")
 parser.add_option("--smoothAlgo",       dest="smoothAlgo",  default='k5a', choices=["k5a", "k3a", "k5b"],  action="store",  help="Which smoothing algo?")
 parser.add_option("--iterations",       dest="iterations", type="int",  default=1,  action="store",  help="How many smoothing iterations?")
-parser.add_option("--combined",         action="store_true",  help="Combine the years?")
-parser.add_option("--unblind",          action="store_true",  help="Use real data?")
 parser.add_option("--smooth",           action="store_true",  help="Use real data?")
 (options, args) = parser.parse_args()
 
@@ -54,18 +48,14 @@ def toGraph(name,title,length,x,y):
     del c
     return result
 
-yearString = str(options.year) if not options.combined else 'comb'
-signalString = options.signal
-
 # input
-
 analysis_results = '../workflow/results/'
-defFile = os.path.join(analysis_results, "T2tt.pkl")
+defFile = os.path.join(analysis_results, "%s.pkl"%options.signal)
 
 print defFile
 lumi = 137
 
-plot_directory = os.path.abspath('/home/users/dspitzba/public_html/Stop_Run2/T2tt/')
+plot_directory = os.path.abspath('/home/users/dspitzba/public_html/Stop_Run2/%s/v4/'%options.signal)
 plotDir = os.path.join(plot_directory,'limits')
 if options.smooth:
     plotDir += "_smooth_it%s_%s"%(options.iterations, options.smoothAlgo)
@@ -127,20 +117,22 @@ for i in ["exp","exp_up","exp_down","obs"]:
 
 from xSecSusy import xSecSusy
 xSecSusy_ = xSecSusy()
-xSecKey = "exp" # exp or obs
+xSecKey = "obs" # exp or obs
 for ix in range(hists[xSecKey].GetNbinsX()):
+    #mStop   = hists[xSecKey].GetXaxis().GetBinUpEdge(ix)
+    mStop   = (hists[xSecKey].GetXaxis().GetBinUpEdge(ix)+hists[xSecKey].GetXaxis().GetBinLowEdge(ix)) / 2.
+    scaleup   = xSecSusy_.getXSec(channel='stop13TeV',mass=mStop,sigma=1) /xSecSusy_.getXSec(channel='stop13TeV',mass=mStop,sigma=0)
+    scaledown = xSecSusy_.getXSec(channel='stop13TeV',mass=mStop,sigma=-1)/xSecSusy_.getXSec(channel='stop13TeV',mass=mStop,sigma=0)
+    xSec = xSecSusy_.getXSec(channel='stop13TeV',mass=mStop,sigma=0)
+
+    print "mStop: %s, x-sec: %s"%(mStop, xSec)
+
     for iy in range(hists[xSecKey].GetNbinsY()):
-        #mStop   = (hists[xSecKey].GetXaxis().GetBinUpEdge(ix)+hists[xSecKey].GetXaxis().GetBinLowEdge(ix)) / 2.
-        mStop   = hists[xSecKey].GetXaxis().GetBinUpEdge(ix)
         mNeu    = (hists[xSecKey].GetYaxis().GetBinUpEdge(iy)+hists[xSecKey].GetYaxis().GetBinLowEdge(iy)) / 2.
-        v       = hists[xSecKey].GetBinContent(hists[xSecKey].FindBin(mStop, mNeu))
-        if mStop>99 and v>0 or True:
-            scaleup   = xSecSusy_.getXSec(channel='stop13TeV',mass=mStop,sigma=1) /xSecSusy_.getXSec(channel='stop13TeV',mass=mStop,sigma=0)
-            scaledown = xSecSusy_.getXSec(channel='stop13TeV',mass=mStop,sigma=-1)/xSecSusy_.getXSec(channel='stop13TeV',mass=mStop,sigma=0)
-            xSec = xSecSusy_.getXSec(channel='stop13TeV',mass=mStop,sigma=0)
-            hists["obs_UL"].SetBinContent(hists[xSecKey].FindBin(mStop, mNeu), v * xSec)
-            hists["obs_up"].SetBinContent(hists[xSecKey].FindBin(mStop, mNeu), v*scaleup)
-            hists["obs_down"].SetBinContent(hists[xSecKey].FindBin(mStop, mNeu), v*scaledown)
+        v       = hists[xSecKey].GetBinContent(hists[xSecKey].FindBin(mStop, mNeu)) # get the value
+        hists["obs_UL"].SetBinContent(hists[xSecKey].FindBin(mStop, mNeu), v * xSec)
+        hists["obs_up"].SetBinContent(hists[xSecKey].FindBin(mStop, mNeu), v*scaleup)
+        hists["obs_down"].SetBinContent(hists[xSecKey].FindBin(mStop, mNeu), v*scaledown)
 
 # set bins for y=0
 for ix in range(hists[xSecKey].GetNbinsX()):
@@ -176,13 +168,13 @@ ROOT.gStyle.SetPadRightMargin(0.05)
 c1 = ROOT.TCanvas()
 niceColorPalette(255)
 
-hists[xSecKey].GetZaxis().SetRangeUser(0.002, 2999)
-hists[xSecKey].Draw('COLZ')
+hists["obs_UL"].GetZaxis().SetRangeUser(0.002, 2999)
+hists["obs_UL"].Draw('COLZ')
 c1.SetLogz()
 
 c1.Print(os.path.join(plotDir, 'limit.png'))
 
-modelname = signalString
+modelname = options.signal
 temp = ROOT.TFile("tmp.root","recreate")
 
 ## we currently use non-smoothed color maps!
@@ -221,88 +213,127 @@ outputname = os.path.join(plotDir, 'limit')
 # read the config file
 fileIN = inputFile('SMS_limit.cfg')
 
-dummy = {}
-dummy['nominal'] = ROOT.TGraph()
-dummy['colorLine'] = fileIN.OBSERVED['colorLine']
-dummy['plus'] = ROOT.TGraph()
-dummy['minus'] = ROOT.TGraph()
-
 # classic temperature histogra
-#xsecPlot = smsPlotXSEC(modelname, fileIN.HISTOGRAM, fileIN.OBSERVED, fileIN.EXPECTED, fileIN.ENERGY, fileIN.LUMI, "", "asdf")
-xsecPlot = smsPlotXSEC(modelname, fileIN.HISTOGRAM, dummy, fileIN.EXPECTED, fileIN.ENERGY, fileIN.LUMI, fileIN.PRELIMINARY, "asdf")
-#xsecPlot.Draw( lumi = lumi, zAxis_range = (10**-3,10**2) )
+xsecPlot = smsPlotXSEC(modelname, fileIN.HISTOGRAM, fileIN.OBSERVED, fileIN.EXPECTED, fileIN.ENERGY, fileIN.LUMI, "", "asdf")
 xsecPlot.Draw( lumi = lumi, zAxis_range = (10**-4,10) )
 #SINGLELEP t2tt_sus19_009.root gExpNew- kGreen kOrange
 from Stop_Run2.tools.helpers import getObjFromFile
 #self.model.Xmin+3*xRange/100, self.model.Ymax-2.45*yRange/100*10
-xRange=1350
-Xmin = 150
-Xmax = 1500
-yRange = 1500
-Ymin = 0
-Ymax = 1500
+if options.signal == 'T2tt':
+    xRange=1350
+    Xmin = 150
+    Xmax = 1500
+    yRange = 1500
+    Ymin = 0
+    Ymax = 1500
+elif options.signal == 'T2bW':
+    xRange=1300
+    Xmin = 200
+    Xmax = 1500
+    yRange = 1500
+    Ymin = 0
+    Ymax = 1500
 
-exp_0l = getObjFromFile('t2tt_sus19_010.root', 'graph_smoothed_Exp')
-exp_0l.SetLineWidth(4)
-exp_0l.SetLineStyle(6)
-exp_0l.SetLineColor(ROOT.kGreen+1)
-exp_0l.Draw("same")
+if options.signal == 'T2tt':
 
-lexp_0l = ROOT.TGraph(2)
-lexp_0l.SetName("LExp1l")
-lexp_0l.SetTitle("LExp1l")
-lexp_0l.SetLineColor(ROOT.kGreen+1)
-lexp_0l.SetLineStyle(6)
-lexp_0l.SetLineWidth(4)
-lexp_0l.SetPoint(0, Xmin+3*xRange/100, Ymax-2.80*yRange/100*10)
-lexp_0l.SetPoint(1, Xmin+10*xRange/100, Ymax-2.80*yRange/100*10)
-lexp_0l.Draw("same")
-textExp_0l = ROOT.TLatex(Xmin+11*xRange/100, Ymax-2.95*yRange/100*10, "Expected 0l analysis")
-textExp_0l.SetTextFont(42)
-textExp_0l.SetTextSize(0.035)
-textExp_0l.Draw()
-
-
-exp_1l = getObjFromFile('t2tt_sus19_009.root', 'gExpNew')
-exp_1l.SetLineWidth(4)
-exp_1l.SetLineStyle(3)
-exp_1l.SetLineColor(ROOT.kBlue+1)
-exp_1l.Draw("same")
-
-lexp_1l = ROOT.TGraph(2)
-lexp_1l.SetName("LExp1l")
-lexp_1l.SetTitle("LExp1l")
-lexp_1l.SetLineColor(ROOT.kBlue+1)
-lexp_1l.SetLineStyle(3)
-lexp_1l.SetLineWidth(4)
-lexp_1l.SetPoint(0, Xmin+3*xRange/100, Ymax-3.30*yRange/100*10)
-lexp_1l.SetPoint(1, Xmin+10*xRange/100, Ymax-3.30*yRange/100*10)
-lexp_1l.Draw("same")
-textExp_1l = ROOT.TLatex(Xmin+11*xRange/100, Ymax-3.45*yRange/100*10, "Expected 1l analysis")
-textExp_1l.SetTextFont(42)
-textExp_1l.SetTextSize(0.035)
-textExp_1l.Draw()
-
-
-exp_2l = getObjFromFile('t2tt_sus19_011.root', 'contour_exp')
-exp_2l.SetLineWidth(4)
-exp_2l.SetLineStyle(4)
-exp_2l.SetLineColor(ROOT.kOrange+1)
-exp_2l.Draw("same")
-
-lexp_2l = ROOT.TGraph(2)
-lexp_2l.SetName("LExp2l")
-lexp_2l.SetTitle("LExp2l")
-lexp_2l.SetLineColor(ROOT.kOrange+1)
-lexp_2l.SetLineStyle(4)
-lexp_2l.SetLineWidth(4)
-lexp_2l.SetPoint(0, Xmin+3*xRange/100, Ymax-3.85*yRange/100*10)
-lexp_2l.SetPoint(1, Xmin+10*xRange/100, Ymax-3.85*yRange/100*10)
-lexp_2l.Draw("same")
-textExp_2l = ROOT.TLatex(Xmin+11*xRange/100, Ymax-3.95*yRange/100*10, "Expected 2l analysis")
-textExp_2l.SetTextFont(42)
-textExp_2l.SetTextSize(0.035)
-textExp_2l.Draw()
+    exp_0l = getObjFromFile('t2tt_sus19_010.root', 'graph_smoothed_Exp')
+    exp_0l.SetLineWidth(4)
+    exp_0l.SetLineStyle(6)
+    exp_0l.SetLineColor(ROOT.kGreen+1)
+    exp_0l.Draw("same")
+    
+    lexp_0l = ROOT.TGraph(2)
+    lexp_0l.SetName("LExp1l")
+    lexp_0l.SetTitle("LExp1l")
+    lexp_0l.SetLineColor(ROOT.kGreen+1)
+    lexp_0l.SetLineStyle(6)
+    lexp_0l.SetLineWidth(4)
+    lexp_0l.SetPoint(0, Xmin+3*xRange/100, Ymax-2.80*yRange/100*10)
+    lexp_0l.SetPoint(1, Xmin+10*xRange/100, Ymax-2.80*yRange/100*10)
+    lexp_0l.Draw("same")
+    textExp_0l = ROOT.TLatex(Xmin+11*xRange/100, Ymax-2.95*yRange/100*10, "Expected 0l analysis")
+    textExp_0l.SetTextFont(42)
+    textExp_0l.SetTextSize(0.035)
+    textExp_0l.Draw()
+    
+    
+    exp_1l = getObjFromFile('t2tt_sus19_009.root', 'gExpNew')
+    exp_1l.SetLineWidth(4)
+    exp_1l.SetLineStyle(3)
+    exp_1l.SetLineColor(ROOT.kBlue+1)
+    exp_1l.Draw("same")
+    
+    lexp_1l = ROOT.TGraph(2)
+    lexp_1l.SetName("LExp1l")
+    lexp_1l.SetTitle("LExp1l")
+    lexp_1l.SetLineColor(ROOT.kBlue+1)
+    lexp_1l.SetLineStyle(3)
+    lexp_1l.SetLineWidth(4)
+    lexp_1l.SetPoint(0, Xmin+3*xRange/100, Ymax-3.30*yRange/100*10)
+    lexp_1l.SetPoint(1, Xmin+10*xRange/100, Ymax-3.30*yRange/100*10)
+    lexp_1l.Draw("same")
+    textExp_1l = ROOT.TLatex(Xmin+11*xRange/100, Ymax-3.45*yRange/100*10, "Expected 1l analysis")
+    textExp_1l.SetTextFont(42)
+    textExp_1l.SetTextSize(0.035)
+    textExp_1l.Draw()
+    
+    
+    exp_2l = getObjFromFile('t2tt_sus19_011.root', 'contour_exp')
+    exp_2l.SetLineWidth(4)
+    exp_2l.SetLineStyle(4)
+    exp_2l.SetLineColor(ROOT.kOrange+1)
+    exp_2l.Draw("same")
+    
+    lexp_2l = ROOT.TGraph(2)
+    lexp_2l.SetName("LExp2l")
+    lexp_2l.SetTitle("LExp2l")
+    lexp_2l.SetLineColor(ROOT.kOrange+1)
+    lexp_2l.SetLineStyle(4)
+    lexp_2l.SetLineWidth(4)
+    lexp_2l.SetPoint(0, Xmin+3*xRange/100, Ymax-3.85*yRange/100*10)
+    lexp_2l.SetPoint(1, Xmin+10*xRange/100, Ymax-3.85*yRange/100*10)
+    lexp_2l.Draw("same")
+    textExp_2l = ROOT.TLatex(Xmin+11*xRange/100, Ymax-3.95*yRange/100*10, "Expected 2l analysis")
+    textExp_2l.SetTextFont(42)
+    textExp_2l.SetTextSize(0.035)
+    textExp_2l.Draw()
+    
+    ### ATLAS result for comparison
+    showATLAS = True
+    
+    if showATLAS:
+        import json
+        atlas_0l = json.load(file('data/ATLAS_stop0l_exp.json'))
+        atlas_0l_exp = ROOT.TGraph()
+        atlas_0l_exp.SetPoint(0,85,0)
+        iPoint = 1
+        for point in reversed(atlas_0l['values']):
+            print point['x'][0]['value'], point['y'][0]['value']
+            if float(point['x'][0]['value'])-float(point['y'][0]['value']) < 85: continue
+            atlas_0l_exp.SetPoint(iPoint, float(point['x'][0]['value']), float(point['y'][0]['value']))
+            iPoint += 1
+            if float(point['y'][0]['value']) < 0.1: break
+        atlas_0l_exp.SetPoint(iPoint+2,1000,0)
+        atlas_0l_exp.SetLineColor(ROOT.kMagenta)
+        atlas_0l_exp.SetLineStyle(4)
+        atlas_0l_exp.SetLineWidth(2)
+        atlas_0l_exp.Draw()
+    
+        atlas_1l = json.load(file('data/ATLAS_stop1l_exp.json'))
+        atlas_1l_exp = ROOT.TGraph()
+        atlas_1l_exp.SetPoint(0,85,0)
+        iPoint = 1
+        for point in atlas_1l['values']:
+            print point['x'][0]['value'], point['y'][0]['value']
+            if float(point['x'][0]['value'])-float(point['y'][0]['value']) < 85: continue
+            atlas_1l_exp.SetPoint(iPoint, float(point['x'][0]['value']), float(point['y'][0]['value']))
+            iPoint += 1
+            #if float(point['y'][0]['value']) < 0.1: break
+        atlas_1l_exp.SetPoint(iPoint+2,1000,0)
+        atlas_1l_exp.SetLineColor(ROOT.kAzure+1)
+        atlas_1l_exp.SetLineStyle(4)
+        atlas_1l_exp.SetLineWidth(2)
+        atlas_1l_exp.Draw()
 
 xsecPlot.Save("%sXSEC" %outputname)
 

@@ -16,20 +16,32 @@ replaceDict = [\
 
     # systematics
     ('ISRSystSig',      'ISR_Weight'),
-    ('ISRSystBG',     'ISR_Weight_background'),
+    ('ISRSystBG',       'ISR_Weight_background'), # can have either name
+    ('ISRSyst',         'ISR_Weight_background'),
     ('jesSyst',         'JES'),
     ('q2Syst',          'LHEScale'),
     ('SigGenMETunc',    'MET_Unc'),
-    ('pdfSystBG',       'PDF_Weight'),
+    ('pdfSystBG',       'PDF_Weight'), # can have either name
+    ('pdfSyst',         'PDF_Weight'),
     ('pileupSyst',      'PU_Weight'),
     ('L1prefireSyst',   'Prefire_Weight'),
-    ('bTagEffHFSyst',   'b'),
+    ('bTagEffHFSyst',   'b_heavy'),
+    ('bTagEffLFSyst',   'b_light'),
     ('bTagFSEffSystSig', 'b_fast'),
     ('resttagSFSyst',   'eff_restoptag'),
     ('merttagSFSyst',   'eff_toptag'),
     ('LumiSyst',        'lumi'),
+    ('softbSFSyst',     'ivfunc'),
+    ('TrigSyst',        'trigger_err'),
+    ('ttZxsecSystZ',    'TTZ_SF'),
     ('lnU',             'lnN')
 ]
+
+model           = 'T2bW'
+small           = False
+submit          = True
+overwriteTar    = False
+
     
 ## Harvest the results
 def readResFile(fname):
@@ -58,8 +70,14 @@ def touch(fname, times=None):
     with open(fname, 'a'):
         os.utime(fname, times)
 
-stop_1l_card_dir = os.path.abspath('./cards/T2tt/1l/')
+
+
+stop_1l_card_dir = os.path.abspath('./cards/%s/1l/'%model)
 stop_1l_cards = glob.glob(stop_1l_card_dir+'/*.txt')
+
+if small:
+    stop_1l_cards = stop_1l_cards[1:4]
+
 
 # get all the cards from 1l analysis - one card per mass point. Nice!
 signals_noDuplicates = {'_'.join(s.replace('.txt','').split('/')[-1].split('_')[2:5]) for s in stop_1l_cards }
@@ -68,28 +86,26 @@ for signal in signals_noDuplicates:
     mStop = int(signal.split('_')[1])
     mLSP  = int(signal.split('_')[2])
     card = stop_1l_card_dir + '/datacard_std_%s.txt'%signal
-    if mStop - mLSP < 225: card = card.replace('std', 'tcor')
-    if mStop - mLSP <= 150: card = card.replace('tcor', 'Wcor')
+    if mStop - mLSP < 225 and model=='T2tt': card = card.replace('std', 'tcor')
+    if mStop - mLSP <= 150 and model=='T2tt': card = card.replace('tcor', 'Wcor')
     if  not os.path.isfile(card):
         raise NameError("Card file not found, this should not happen")
     signals.append({'name': signal, 'mStop': mStop, 'mLSP': mLSP, '1l': card})
 
-submit = True
-overwriteTar = True
 
 for nJob, signal in enumerate(signals):
     found = True
     print
-    print "Job %s/%s: %s"%(nJob, len(signals), signal['name'])
+    print "Job %s/%s: %s"%(nJob+1, len(signals), signal['name'])
     sig     = signal['name']
     mStop   = signal['mStop']
     mLSP    = signal['mLSP']
     
 
     ## get the 2l cards. need to take care of rounding
-    allCards = [ x.split('/')[-1].replace('.txt','') for x in glob.glob(os.path.abspath('./cards/T2tt/2l/*.txt')) ]
+    allCards = [ x.split('/')[-1].replace('.txt','') for x in glob.glob(os.path.abspath('./cards/%s/2l/*.txt'%model)) ]
     if sig in allCards:
-        dilep_card = os.path.abspath('./cards/T2tt/2l/%s_combination_shapeCard.txt'%sig)
+        dilep_card = os.path.abspath('./cards/%s/2l/%s_combination_shapeCard.txt'%(model, sig))
     else:
         masses = [ (int(x.split('_')[1]), int(x.split('_')[2]))  for x in allCards ]
         closestPointIndex = -1
@@ -100,7 +116,7 @@ for nJob, signal in enumerate(signals):
                 dM1 = abs(mStop-m1)
                 dM2 = abs(mLSP-m2)
                 closestPointIndex = i
-        dilep_card = os.path.abspath('./cards/T2tt/2l/T2tt_%s_%s_combination_shapeCard.txt'%masses[closestPointIndex])
+        dilep_card = os.path.abspath('./cards/%s/2l/%s_%s_%s_combination_shapeCard.txt'%(model, model, masses[closestPointIndex][0], masses[closestPointIndex][1]))
         if dM1>4 or dM2>4:
             found = False
             dilep_card = False
@@ -109,7 +125,7 @@ for nJob, signal in enumerate(signals):
 
     # get the 0l cards. need to take care of rounding
     ## first, check that there's a directory for the cards
-    allDirs = [ x.split('/')[-1] for x in glob.glob(os.path.abspath('./cards/T2tt/0l/*')) if not 'txt' in x ]
+    allDirs = [ x.split('/')[-1] for x in glob.glob(os.path.abspath('./cards/%s/0l/*'%model)) if not 'txt' in x ]
     if sig in allDirs:
         allhad_card = sig
     else:
@@ -123,20 +139,20 @@ for nJob, signal in enumerate(signals):
                 dM2 = abs(mLSP-m2)
                 closestPointIndex = i
 
-        allhad_card = 'T2tt_%s_%s'%masses[closestPointIndex]
+        allhad_card = model+'_%s_%s'%masses[closestPointIndex]
         if dM1>4 or dM2>4:
             found = False
             allhad_card = False
 
-    allhad_cards = os.path.abspath('./cards/T2tt/0l/%s.txt'%allhad_card) if allhad_card else False
+    allhad_cards = os.path.abspath('./cards/%s/0l/%s.txt'%(model,allhad_card)) if allhad_card else False
     if allhad_card:
         if not os.path.isfile(allhad_cards):
             print 'combining card', allhad_card
-            subprocess.call("cd cards/T2tt/0l/; combineCards.py %s/*.txt > %s.txt"%(allhad_card, allhad_card), shell=True)
+            subprocess.call("cd cards/%s/0l/; combineCards.py %s/*.txt > %s.txt"%(model, allhad_card, allhad_card), shell=True)
     
     signal['0l'] = allhad_cards
     signal['0l_name'] = allhad_card
-    signal['0l_shapes'] = os.path.abspath('./cards/T2tt/0l/%s/'%allhad_card) if allhad_card else False
+    signal['0l_shapes'] = os.path.abspath('./cards/%s/0l/%s/'%(model, allhad_card)) if allhad_card else False
 
     signal['allChannels'] = found
 
@@ -153,6 +169,7 @@ for signal in signals:
     sig = signal['name']
     tmpDir = 'tmp/%s'%sig
 
+    print sig
     datacard = "datacard_combined_%s.txt"%sig
     
     if (signal['2l'] == False or signal['0l']==False) and signal['mStop']<=1200:
@@ -194,8 +211,12 @@ for signal in signals:
         with tarfile.open("%s.tar.gz"%tmpDir, "w:gz") as tar:
             tar.add(tmpDir, arcname=os.path.sep)
 
-    tag = 'v2'
-    outDir = '/hadoop/cms/store/user/dspitzba/stopCombination/T2tt/%s/'%tag
+    tag = 'v4'
+    outDir = '/hadoop/cms/store/user/dspitzba/stopCombination/%s/%s/'%(model, tag)
+
+    lowmass = True if signal['mStop'] <= 400 else False
+
+    signal['workspace'] = outDir+'%s_1.root'%sig
 
     if submit:
         # create a fake sample from the shape card(s), and hijack the monitoring/resubmission of metis 
@@ -204,7 +225,7 @@ for signal in signals:
         task = CondorTask(
             sample                  = dummy,
             executable              = "executable.sh",
-            arguments               = " %s %s"%(datacard, sig),
+            arguments               = " %s %s %s"%(datacard, sig, lowmass),
             tarfile                 = "tmp/%s.tar.gz"%sig,
             files_per_output        = 1,
             output_dir              = outDir,
@@ -217,7 +238,6 @@ for signal in signals:
             min_completion_fraction = 1.00,
         )
         
-        signal['workspace'] = outDir+'%s_1.root'%sig
         
         tasks.append(task)
 
@@ -238,7 +258,7 @@ if submit:
             fracs.append(frac)
    
         # parse the total summary and write out the dashboard
-        StatsParser(data=total_summary, webdir="~/public_html/dump/metis_T2tt/").do()
+        StatsParser(data=total_summary, webdir="~/public_html/dump/metis_%s/"%model).do()
         
         print "%s/%s jobs are completed."%(sum(fracs),len(fracs))
 
@@ -253,6 +273,7 @@ if submit:
 
 for signal in signals:
     #signal['spin'] = signal['name'].split('_')[0]
+    print signal['name']
     try:
         res = readResFile(signal['workspace'])
         for k in res.keys():
@@ -261,6 +282,6 @@ for signal in signals:
         print "Couldn't open Workspace"
         pass
  
-pickle.dump(signals, file('results/T2tt.pkl','w'))
+pickle.dump(signals, file('results/%s.pkl'%model,'w'))
 
 df = pandas.DataFrame(signals)   
