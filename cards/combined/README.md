@@ -7,7 +7,7 @@ combineCards.py dc_0l=T2tt_1000_100.txt dc_1l=datacard_std_T2tt_1000_100.txt dc_
 combine --saveWorkspace -M AsymptoticLimits datacard_combined_T2tt_1000_100.txt
 ```
 
-First attempt correlations as described below:
+The command shown above should yield:
 ```
  -- AsymptoticLimits ( CLs ) --
 Observed Limit: r < 0.1708334
