@@ -36,7 +36,7 @@ For the time being we use stop-0l nuisance names in the combination.
 | LHEScale              | q2Syst                | n/a           | stop-2l has ttZ and ttbar scale uncertainty decorrelated | :recycle: |
 | LHESigScale           | n/a                   | scale         | stop-1l has all scale variations correlated | :recycle: |
 | PDF_Weight            | pdfSyst(BG)           | PDF           | PDF (Bkg and tt+DM only) | :white_check_mark: |
-| JES                   | jesSyst               | JEC           | JES for signal in 1l missing | :white_check_mark: |
+| JES                   | jesSyst               | JEC           | JES | :white_check_mark: |
 | PU_Weight             | pileupSyst            | PU            | pileup modeling | :white_check_mark: |
 | Prefire_Weight        | L1prefireSyst         | L1prefire     | L1 prefire | :white_check_mark: |
 | b_heavy               | bTagEffHFSyst         | SFb           | b-tag | :white_check_mark: |
