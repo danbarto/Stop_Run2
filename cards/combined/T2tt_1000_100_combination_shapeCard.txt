@@ -1,0 +1,59 @@
+#cardFileWriter, 09:47PM on September 08, 2020
+imax 1
+jmax *
+kmax *
+
+# Bin0: inclusive bin
+
+shapes * * T2tt_1000_100_combination_shape.root  $PROCESS $PROCESS_$SYSTEMATIC 
+
+bin                                                                   Bin0
+observation                                                         307230
+
+bin                                                                   Bin0         Bin0         Bin0         Bin0         Bin0         Bin0
+process                                                             signal       TTJets           DY   multiBoson          TTZ       TTXNoZ
+process                                                                  0            1            2            3            4            5
+rate                                                                11.669   293197.799     2789.156     1182.677     1071.432     1063.411
+
+lumi                           lnN                                   1.014        1.014        1.014        1.015        1.014        1.014
+Rare2l                         lnN                                       -            -            -            -            -         1.25
+JES                            shape                                   1.0          1.0          1.0          1.0          1.0          1.0
+PU_weight                      shape                                   1.0          1.0          1.0          1.0          1.0          1.0
+JER                            shape                                   1.0          1.0          1.0          1.0          1.0          1.0
+metres                         shape                                   1.0          1.0          1.0          1.0          1.0          1.0
+trigger2l                      shape                                   1.0            -          1.0          1.0          1.0          1.0
+b_light                        shape                                   1.0          1.0          1.0          1.0          1.0          1.0
+b_heavy                        shape                                   1.0          1.0          1.0          1.0          1.0          1.0
+leptonSF                       shape                                   1.0          1.0          1.0          1.0          1.0          1.0
+Prefire_weight                 shape                                   1.0          1.0          1.0          1.0          1.0          1.0
+leptonHit0SF                   shape                                   1.0          1.0          1.0          1.0          1.0          1.0
+leptonSIP3DSF                  shape                                   1.0          1.0          1.0          1.0          1.0          1.0
+PDF_Weight                     shape                                     -          1.0            -            -          1.0            -
+toppt                          shape                                     -          1.0            -            -            -            -
+topXSec                        shape                                     -          1.0            -            -            -            -
+TTZ_SF                         shape                                     -            -            -            -          1.0            -
+topFakes                       shape                                     -          1.0            -            -            -            -
+DY_SR                          shape                                     -            -          1.0            -            -            -
+topNonGauss                    shape                                     -          1.0            -            -            -            -
+MB_SR                          shape                                     -            -            -          1.0            -            -
+scaleTT                        shape                                     -          1.0            -            -            -            -
+scaleTTZ                       shape                                     -            -            -            -          1.0            -
+DY_hMT2ll                      shape                                     -            -          1.0            -            -            -
+leptonFS                       shape                                   1.0            -            -            -            -            -
+b_fast                         shape                                   1.0            -            -            -            -            -
+ISR_Weight                     shape                                   1.0            -            -            -            -            -
+MET_Unc                        shape                                   1.0            -            -            -            -            -
+LHESigScale                    shape                                   1.0            -            -            -            -            -
+
+DY_norm_Bin0 rateParam Bin0 DY (@0*1) DY_norm
+DY_norm extArg 1 [0,10]
+
+TTZ_norm_Bin0 rateParam Bin0 TTZ (@0*1) TTZ_norm
+TTZ_norm extArg 1 [0,10]
+
+TTJets_norm_Bin0 rateParam Bin0 TTJets (@0*1) TTJets_norm
+TTJets_norm extArg 1 [0,10]
+
+multiBoson_norm_Bin0 rateParam Bin0 multiBoson (@0*1) multiBoson_norm
+multiBoson_norm extArg 1 [0.6,1.4]
+* autoMCStats 0 
