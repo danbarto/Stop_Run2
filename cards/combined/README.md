@@ -3,21 +3,26 @@
 ## Commands
 
 ```
-combineCards.py dc_0l=../0l/T2tt_1052_100.txt dc_1l=datacard_std_T2tt_1050_100.txt dc_2l=T2tt_1052_100_combination_shapeCard.txt > datacard_combined_T2tt_1050_100.txt
-combine --saveWorkspace -M AsymptoticLimits --rMin -10 --rMax 10 --cminDefaultMinimizerStrategy 0 datacard_combined_T2tt_1050_100.txt
+combineCards.py dc_0l=T2tt_1000_100.txt dc_1l=datacard_std_T2tt_1000_100.txt dc_2l=T2tt_1000_100_combination_shapeCard.txt > datacard_combined_T2tt_1050_100.txt
+combine --saveWorkspace -M AsymptoticLimits datacard_combined_T2tt_1000_100.txt
 ```
 
-First attempt correlations as described below:
+The command shown above should yield:
 ```
  -- AsymptoticLimits ( CLs ) --
-Observed Limit: r < 0.2078
-Expected  2.5%: r < 0.1133
-Expected 16.0%: r < 0.1558
-Expected 50.0%: r < 0.2266
-Expected 84.0%: r < 0.3376
-Expected 97.5%: r < 0.4858
+Observed Limit: r < 0.1708334
+Expected  2.5%: r < 0.0932521
+Expected 16.0%: r < 0.1276795
+Expected 50.0%: r < 0.1850585
+Expected 84.0%: r < 0.2735767
+Expected 97.5%: r < 0.3921772
 ```
 More than 20% better than stop-0l alone.
+
+For low-mass points, use
+```
+combine --saveWorkspace -M AsymptoticLimits --rMin -10 --rMax 10 --cminDefaultMinimizerStrategy 0 datacard_combined_T2tt_350_100.txt
+```
 
 ## Correlations
 
