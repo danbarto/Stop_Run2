@@ -84,6 +84,9 @@ results_df = pd.DataFrame(results)
 ## filter out the failed fits
 results_df = results_df[results_df['0.500']>0]
 
+## load corridor results
+corridor_df = pd.DataFrame.from_csv("data/corridor_limits.txt", index_col=None, parse_dates=False)
+
 exp_graph       = toGraph2D('exp',      'exp',      len(results_df['mStop'].tolist()),results_df['mStop'].tolist(),results_df['mLSP'].tolist(),results_df['0.500'].tolist())
 exp_up_graph    = toGraph2D('exp_up',   'exp_up',   len(results_df['mStop'].tolist()),results_df['mStop'].tolist(),results_df['mLSP'].tolist(),results_df['0.840'].tolist())
 exp_down_graph  = toGraph2D('exp_down', 'exp_down', len(results_df['mStop'].tolist()),results_df['mStop'].tolist(),results_df['mLSP'].tolist(),results_df['0.160'].tolist())

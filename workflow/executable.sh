@@ -52,9 +52,9 @@ eval `scramv1 runtime -sh`
 #git clone https://github.com/cms-analysis/HiggsAnalysis-CombinedLimit.git HiggsAnalysis/CombinedLimit
 git clone --single-branch --branch SUSYNano19 https://github.com/mkilpatr/HiggsAnalysis-CombinedLimit.git HiggsAnalysis/CombinedLimit
 
-cd HiggsAnalysis/CombinedLimit
-git fetch origin
-git checkout v8.0.1
+#cd HiggsAnalysis/CombinedLimit
+#git fetch origin
+#git checkout v8.0.1
 scramv1 b clean; scramv1 b # always make a clean build
 
 cd $MYDIR

@@ -13,6 +13,7 @@ argParser.add_argument('--plot_directory',     action='store',      default='DML
 argParser.add_argument('--blinded',            action='store_true')
 argParser.add_argument('--cardDir',            action='store',      default='TTbarDM_preAppFix_DYttZflat')
 argParser.add_argument('--xsec',            action='store_true')
+argParser.add_argument('--logy',            action='store_true')
 args = argParser.parse_args()
 
 #ROOT.gROOT.SetBatch(True)
@@ -187,7 +188,8 @@ xsecs.SetLineColor(ROOT.kRed+1)
 #xsecs.SetLineStyle(3)
 
 can = ROOT.TCanvas("can","",700,700)
-can.SetLogy()
+if args.logy:
+    can.SetLogy()
 if args.scan == 'mPhi' and False:
     can.SetLogx()
 
@@ -216,7 +218,7 @@ mg.Add(obs1Sigma)
 y_max = 500
 y_min = 0.05
 if args.xsec:
-    y_max = 500
+    y_max = 500 if args.logy else 2
     y_min = 0.005
 #if mChi == 10:
 #    y_max = 5000
@@ -249,7 +251,8 @@ if not args.blinded: obs.Draw("l same")
 leg_size = 0.04 * 8
 
 
-leg = ROOT.TLegend(0.285,0.79-leg_size,0.6,0.79)
+#leg = ROOT.TLegend(0.285,0.79-leg_size,0.6,0.79)
+leg = ROOT.TLegend(0.315,0.79-leg_size,0.6,0.79)
 leg.SetBorderSize(1)
 leg.SetFillColor(0)
 leg.SetLineColor(0)
@@ -279,15 +282,15 @@ latex2.SetNDC()
 latex2.SetTextSize(0.03)
 latex2.SetTextAlign(11) # align right
 if args.scan == 'mChi' and args.spin == 'scalar':
-    latex2.DrawLatex(0.3,0.89,'#bf{'+tp_+', Dirac DM, m_{#phi} = '+str(fixedMass)+' GeV}')
+    latex2.DrawLatex(0.33,0.89,'#bf{'+tp_+', Dirac DM, m_{#phi} = '+str(fixedMass)+' GeV}')
 elif args.scan == 'mChi' and args.spin == 'pseudo':
-    latex2.DrawLatex(0.3,0.89,'#bf{'+tp_+', Dirac DM, m_{a} = '+str(fixedMass)+' GeV}')
+    latex2.DrawLatex(0.33,0.89,'#bf{'+tp_+', Dirac DM, m_{a} = '+str(fixedMass)+' GeV}')
 else:
-    latex2.DrawLatex(0.3,0.89,'#bf{'+tp_+', Dirac DM, m_{#chi} = '+str(fixedMass)+' GeV}')
+    latex2.DrawLatex(0.33,0.89,'#bf{'+tp_+', Dirac DM, m_{#chi} = '+str(fixedMass)+' GeV}')
 
-latex2.DrawLatex(0.3,0.85,'#bf{g_{q} = 1, g_{DM} = 1}')
+latex2.DrawLatex(0.33,0.85,'#bf{g_{q} = 1, g_{DM} = 1}')
 
-latex2.DrawLatex(0.3,0.80,'#bf{95% CL upper limits}')
+latex2.DrawLatex(0.33,0.80,'#bf{95% CL upper limits}')
 #latex2.DrawLatex(0.22,0.84,'#bf{m_{#chi} = '+str(mChi)+' GeV, g_{q} = 1, g_{#chi} = 1}')
 
 latex1 = ROOT.TLatex()
@@ -306,6 +309,8 @@ if not os.path.isdir(plot_dir):
     os.makedirs(plot_dir)
 
 postFix = '' if not args.xsec  else '_xsec'
+if not args.logy:
+    postFix += '_linear'
 
 if not args.blinded:
     plot_dir += ('/brazil_%s_scan_%s'%(tp, args.scan) + postFix)
