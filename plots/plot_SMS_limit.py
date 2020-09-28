@@ -19,8 +19,11 @@ parser = OptionParser()
 parser.add_option("--signal",           action='store',     default='T2tt',  choices=["T2tt","T2bW"], help="which signal?")
 parser.add_option("--smoothAlgo",       dest="smoothAlgo",  default='k5a', choices=["k5a", "k3a", "k5b"],  action="store",  help="Which smoothing algo?")
 parser.add_option("--iterations",       dest="iterations", type="int",  default=1,  action="store",  help="How many smoothing iterations?")
-parser.add_option("--smooth",           action="store_true",  help="Use real data?")
+parser.add_option("--smooth",           action="store_true",  help="Use smoothing?")
+parser.add_option("--showATLAS",        action="store_true",  help="Show ATLAS contours where available?")
 (options, args) = parser.parse_args()
+
+showATLAS = options.showATLAS
 
 def toGraph2D(name,title,length,x,y,z):
     result = ROOT.TGraph2D(length)
@@ -84,8 +87,17 @@ results_df = pd.DataFrame(results)
 ## filter out the failed fits
 results_df = results_df[results_df['0.500']>0]
 
-## load corridor results
-corridor_df = pd.DataFrame.from_csv("data/corridor_limits.txt", index_col=None, parse_dates=False)
+if options.signal == 'T2tt':
+    ## load corridor results
+    corridor_df = pd.read_csv("data/corridor_limits.txt", index_col=None, parse_dates=False)
+    
+    ## remove corridor results from main analyses, but store it for debugging/comparison purposes
+    corridor_from_inclusive_df = results_df[(((results_df['mStop']-results_df['mLSP'])>140) & ((results_df['mStop']-results_df['mLSP'])<210) & (results_df['mStop']<296) & (results_df['mLSP']<121))]
+    results_df = results_df[~(((results_df['mStop']-results_df['mLSP'])>140) & ((results_df['mStop']-results_df['mLSP'])<210) & (results_df['mStop']<296) & (results_df['mLSP']<121))]
+
+    ## add the new results
+    results_df = pd.concat([results_df, corridor_df])
+
 
 exp_graph       = toGraph2D('exp',      'exp',      len(results_df['mStop'].tolist()),results_df['mStop'].tolist(),results_df['mLSP'].tolist(),results_df['0.500'].tolist())
 exp_up_graph    = toGraph2D('exp_up',   'exp_up',   len(results_df['mStop'].tolist()),results_df['mStop'].tolist(),results_df['mLSP'].tolist(),results_df['0.840'].tolist())
@@ -171,7 +183,7 @@ ROOT.gStyle.SetPadRightMargin(0.05)
 c1 = ROOT.TCanvas()
 niceColorPalette(255)
 
-hists["obs_UL"].GetZaxis().SetRangeUser(0.002, 2999)
+hists["obs_UL"].GetZaxis().SetRangeUser(10**-4, 100)
 hists["obs_UL"].Draw('COLZ')
 c1.SetLogz()
 
@@ -218,7 +230,7 @@ fileIN = inputFile('SMS_limit.cfg')
 
 # classic temperature histogra
 xsecPlot = smsPlotXSEC(modelname, fileIN.HISTOGRAM, fileIN.OBSERVED, fileIN.EXPECTED, fileIN.ENERGY, fileIN.LUMI, "", "asdf")
-xsecPlot.Draw( lumi = lumi, zAxis_range = (10**-4,10) )
+xsecPlot.Draw( lumi = lumi, zAxis_range = (10**-4,100) )
 #SINGLELEP t2tt_sus19_009.root gExpNew- kGreen kOrange
 from Stop_Run2.tools.helpers import getObjFromFile
 #self.model.Xmin+3*xRange/100, self.model.Ymax-2.45*yRange/100*10
@@ -302,7 +314,6 @@ if options.signal == 'T2tt':
     textExp_2l.Draw()
     
     ### ATLAS result for comparison
-    showATLAS = True
     
     if showATLAS:
         import json
