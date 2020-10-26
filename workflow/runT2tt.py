@@ -19,7 +19,8 @@ replaceDict = [\
     ('ISRSystBG',       'ISR_Weight_background'), # can have either name
     ('ISRSyst',         'ISR_Weight_background'),
     ('jesSyst',         'JES'),
-    ('q2Syst',          'LHEScale'),
+    ('q2SystSig',       'LHESigScale'),
+    ('q2SystBG',        'LHEScale'),
     ('SigGenMETunc',    'MET_Unc'),
     ('pdfSystBG',       'PDF_Weight'), # can have either name
     ('pdfSyst',         'PDF_Weight'),
@@ -37,10 +38,18 @@ replaceDict = [\
     ('lnU',             'lnN')
 ]
 
-model           = 'T2bW'
-small           = False
-submit          = True
-overwriteTar    = False
+from optparse import OptionParser
+parser = OptionParser()
+parser.add_option("--signal",       action='store',     default='T2tt',  choices=["T2tt","T2bW","T2bt"], help="which signal?")
+parser.add_option("--small",        action="store_true",  help="Just a subset?")
+parser.add_option("--submit",       action="store_true",  help="Submit jobs?")
+parser.add_option("--overwrite",    action="store_true",  help="Overwrite existing tarballs?")
+(options, args) = parser.parse_args()
+
+model           = options.signal
+small           = options.small
+submit          = options.submit
+overwriteTar    = options.overwrite
 
     
 ## Harvest the results
@@ -102,26 +111,29 @@ for nJob, signal in enumerate(signals):
     mLSP    = signal['mLSP']
     
 
-    ## get the 2l cards. need to take care of rounding
-    allCards = [ x.split('/')[-1].replace('.txt','') for x in glob.glob(os.path.abspath('./cards/%s/2l/*.txt'%model)) ]
-    if sig in allCards:
-        dilep_card = os.path.abspath('./cards/%s/2l/%s_combination_shapeCard.txt'%(model, sig))
-    else:
-        masses = [ (int(x.split('_')[1]), int(x.split('_')[2]))  for x in allCards ]
-        closestPointIndex = -1
-        dM1, dM2 = 9999, 9999
-        for i, t in enumerate(masses):
-            m1, m2 = t
-            if abs(mStop-m1) <= dM1 and abs(mLSP-m2) <= dM2:
-                dM1 = abs(mStop-m1)
-                dM2 = abs(mLSP-m2)
-                closestPointIndex = i
-        dilep_card = os.path.abspath('./cards/%s/2l/%s_%s_%s_combination_shapeCard.txt'%(model, model, masses[closestPointIndex][0], masses[closestPointIndex][1]))
-        if dM1>4 or dM2>4:
-            found = False
-            dilep_card = False
+    if not model == 'T2bt':
+        ## get the 2l cards. need to take care of rounding
+        allCards = [ x.split('/')[-1].replace('.txt','') for x in glob.glob(os.path.abspath('./cards/%s/2l/*.txt'%model)) ]
+        if sig in allCards:
+            dilep_card = os.path.abspath('./cards/%s/2l/%s_combination_shapeCard.txt'%(model, sig))
+        else:
+            masses = [ (int(x.split('_')[1]), int(x.split('_')[2]))  for x in allCards ]
+            closestPointIndex = -1
+            dM1, dM2 = 9999, 9999
+            for i, t in enumerate(masses):
+                m1, m2 = t
+                if abs(mStop-m1) <= dM1 and abs(mLSP-m2) <= dM2:
+                    dM1 = abs(mStop-m1)
+                    dM2 = abs(mLSP-m2)
+                    closestPointIndex = i
+            dilep_card = os.path.abspath('./cards/%s/2l/%s_%s_%s_combination_shapeCard.txt'%(model, model, masses[closestPointIndex][0], masses[closestPointIndex][1]))
+            if dM1>4 or dM2>4:
+                found = False
+                dilep_card = False
 
-    signal['2l'] = dilep_card
+        signal['2l'] = dilep_card
+    else:
+        signal['2l'] = False
 
     # get the 0l cards. need to take care of rounding
     ## first, check that there's a directory for the cards
@@ -172,16 +184,17 @@ for signal in signals:
     print sig
     datacard = "datacard_combined_%s.txt"%sig
     
-    if (signal['2l'] == False or signal['0l']==False) and signal['mStop']<=1200:
+    if (signal['2l'] == False or signal['0l']==False) and signal['mStop']<=1200 and model != 'T2bt':
         print "Mass point missing in some channel. Skipping."
         print signal['name']
         continue
 
     if signal['0l']==False:
-        print "Mass point missing in some channel. Skipping."
+        print "Mass point missing in 0l channel. Skipping."
         print signal['name']
         continue
 
+    print "Tmp dir: %s"%(tmpDir+'/'+signal['0l_name'])
     if not os.path.isdir(tmpDir+'/'+signal['0l_name']):
         os.makedirs(tmpDir+'/'+signal['0l_name'])
 
@@ -195,7 +208,7 @@ for signal in signals:
         for shapeFile in glob.glob(signal['0l_shapes']+'/*.root'):
             shutil.copy(shapeFile, tmpDir+'/'+signal['0l_name'])
         shutil.copy(signal['1l'], tmpDir)
-        if signal['mStop']<=1200:
+        if signal['mStop']<=1200 and signal['2l']:
             shutil.copy(signal['2l'], tmpDir)
             shutil.copy(signal['2l'].replace('Card.txt','.root'), tmpDir)
 
@@ -211,7 +224,12 @@ for signal in signals:
         with tarfile.open("%s.tar.gz"%tmpDir, "w:gz") as tar:
             tar.add(tmpDir, arcname=os.path.sep)
 
-    tag = 'v4'
+    tag = 'v6'
+    '''
+    v4 - in current version of AN
+    v5 - fixing 1l year systematic correlations
+    v6 - scale signal/background correlation
+    '''
     outDir = '/hadoop/cms/store/user/dspitzba/stopCombination/%s/%s/'%(model, tag)
 
     lowmass = True if signal['mStop'] <= 400 else False
@@ -266,8 +284,8 @@ if submit:
             print "Done."
             break
 
-        # 15 min power nap
-        time.sleep(15.*60)
+        # 60 min power nap
+        time.sleep(60.*60)
 
 
 

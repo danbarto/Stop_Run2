@@ -16,7 +16,7 @@ def niceColorPalette(n=255):
 
 from optparse import OptionParser
 parser = OptionParser()
-parser.add_option("--signal",           action='store',     default='T2tt',  choices=["T2tt","T2bW"], help="which signal?")
+parser.add_option("--signal",           action='store',     default='T2tt',  choices=["T2tt","T2bW","T2bt"], help="which signal?")
 parser.add_option("--smoothAlgo",       dest="smoothAlgo",  default='k5a', choices=["k5a", "k3a", "k5b"],  action="store",  help="Which smoothing algo?")
 parser.add_option("--iterations",       dest="iterations", type="int",  default=1,  action="store",  help="How many smoothing iterations?")
 parser.add_option("--smooth",           action="store_true",  help="Use smoothing?")
@@ -98,6 +98,8 @@ if options.signal == 'T2tt':
     ## add the new results
     results_df = pd.concat([results_df, corridor_df])
 
+if options.signal == 'T2bW':
+    results_df = results_df.drop(index=92)
 
 exp_graph       = toGraph2D('exp',      'exp',      len(results_df['mStop'].tolist()),results_df['mStop'].tolist(),results_df['mLSP'].tolist(),results_df['0.500'].tolist())
 exp_up_graph    = toGraph2D('exp_up',   'exp_up',   len(results_df['mStop'].tolist()),results_df['mStop'].tolist(),results_df['mLSP'].tolist(),results_df['0.840'].tolist())
@@ -169,10 +171,14 @@ for i in ["exp", "exp_up", "exp_down", "obs", "obs_up", "obs_down", "obs"]:
         for x in range(int(options.iterations)):
             hists[i + "_smooth"].Smooth(1,options.smoothAlgo)
 
-        if options.signal == 'T2bW':
+        if options.smooth:
             for ix in range(hists[i].GetNbinsX()):
                 for iy in range(hists[i].GetNbinsY()):
-                    if iy>(ix):#  or iy==ix-1 or iy==ix-2:
+                    if options.signal == 'T2bt' and ((hists[i].GetYaxis().GetBinUpEdge(iy)+hists[i].GetYaxis().GetBinLowEdge(iy))/2.)>((hists[i].GetXaxis().GetBinUpEdge(ix)+hists[i].GetXaxis().GetBinLowEdge(ix))/2. -240.):
+                        hists[i + "_smooth"].SetBinContent(ix, iy, hists[i].GetBinContent(ix,iy))
+                    elif options.signal == 'T2bW' and ((hists[i].GetYaxis().GetBinUpEdge(iy)+hists[i].GetYaxis().GetBinLowEdge(iy))/2.)>((hists[i].GetXaxis().GetBinUpEdge(ix)+hists[i].GetXaxis().GetBinLowEdge(ix))/2. -220.):
+                        hists[i + "_smooth"].SetBinContent(ix, iy, hists[i].GetBinContent(ix,iy))
+                    elif options.signal == 'T2tt' and ((hists[i].GetYaxis().GetBinUpEdge(iy)+hists[i].GetYaxis().GetBinLowEdge(iy))/2.)>((hists[i].GetXaxis().GetBinUpEdge(ix)+hists[i].GetXaxis().GetBinLowEdge(ix))/2. -130.):
                         hists[i + "_smooth"].SetBinContent(ix, iy, hists[i].GetBinContent(ix,iy))
 
         
@@ -208,7 +214,10 @@ for i in ["exp", "exp_up", "exp_down", "obs", "obs_up", "obs_down", "obs"]:
         #contourPoints[i][j] = getPoints(g)
         cleanContour(g, model=modelname)
         #g = extendContour(g)
-    contours = max(contours , key=lambda x:x.GetN()).Clone("contour_" + i)
+    if options.signal == 'T2bW' and i=='exp_down' and False:
+        contours = min(contours , key=lambda x:x.GetN()).Clone("contour_" + i) # for whatever reason that's special
+    else:
+        contours = max(contours , key=lambda x:x.GetN()).Clone("contour_" + i)
     contours.Draw()
     c1.Print(os.path.join(plotDir, 'contour_%s.png'%i))
     contours.Write()
@@ -242,12 +251,20 @@ if options.signal == 'T2tt':
     Ymin = 0
     Ymax = 1500
 elif options.signal == 'T2bW':
-    xRange=1300
+    xRange=1250
     Xmin = 200
-    Xmax = 1500
-    yRange = 1500
+    Xmax = 1450
+    yRange = 1050
     Ymin = 0
-    Ymax = 1500
+    Ymax = 1050
+elif options.signal == 'T2bt':
+    xRange=1250
+    Xmin = 200
+    Xmax = 1450
+    yRange = 1050
+    Ymin = 0
+    Ymax = 1050
+
 
 if options.signal == 'T2tt':
 
@@ -266,7 +283,7 @@ if options.signal == 'T2tt':
     lexp_0l.SetPoint(0, Xmin+3*xRange/100, Ymax-2.80*yRange/100*10)
     lexp_0l.SetPoint(1, Xmin+10*xRange/100, Ymax-2.80*yRange/100*10)
     lexp_0l.Draw("same")
-    textExp_0l = ROOT.TLatex(Xmin+11*xRange/100, Ymax-2.95*yRange/100*10, "Expected 0l analysis")
+    textExp_0l = ROOT.TLatex(Xmin+11*xRange/100, Ymax-2.95*yRange/100*10, "Expected 0l")
     textExp_0l.SetTextFont(42)
     textExp_0l.SetTextSize(0.035)
     textExp_0l.Draw()
@@ -287,7 +304,7 @@ if options.signal == 'T2tt':
     lexp_1l.SetPoint(0, Xmin+3*xRange/100, Ymax-3.30*yRange/100*10)
     lexp_1l.SetPoint(1, Xmin+10*xRange/100, Ymax-3.30*yRange/100*10)
     lexp_1l.Draw("same")
-    textExp_1l = ROOT.TLatex(Xmin+11*xRange/100, Ymax-3.45*yRange/100*10, "Expected 1l analysis")
+    textExp_1l = ROOT.TLatex(Xmin+11*xRange/100, Ymax-3.45*yRange/100*10, "Expected 1l")
     textExp_1l.SetTextFont(42)
     textExp_1l.SetTextSize(0.035)
     textExp_1l.Draw()
@@ -308,7 +325,7 @@ if options.signal == 'T2tt':
     lexp_2l.SetPoint(0, Xmin+3*xRange/100, Ymax-3.85*yRange/100*10)
     lexp_2l.SetPoint(1, Xmin+10*xRange/100, Ymax-3.85*yRange/100*10)
     lexp_2l.Draw("same")
-    textExp_2l = ROOT.TLatex(Xmin+11*xRange/100, Ymax-3.95*yRange/100*10, "Expected 2l analysis")
+    textExp_2l = ROOT.TLatex(Xmin+11*xRange/100, Ymax-3.95*yRange/100*10, "Expected 2l")
     textExp_2l.SetTextFont(42)
     textExp_2l.SetTextSize(0.035)
     textExp_2l.Draw()
@@ -348,6 +365,117 @@ if options.signal == 'T2tt':
         atlas_1l_exp.SetLineStyle(4)
         atlas_1l_exp.SetLineWidth(2)
         atlas_1l_exp.Draw()
+
+
+if options.signal == 'T2bW':
+
+    exp_0l = getObjFromFile('data/T2bW_0l.root', 'graph_smoothed_Exp')
+    exp_0l.SetLineWidth(4)
+    exp_0l.SetLineStyle(6)
+    exp_0l.SetLineColor(ROOT.kGreen+1)
+    exp_0l.Draw("same")
+    
+    lexp_0l = ROOT.TGraph(2)
+    lexp_0l.SetName("LExp1l")
+    lexp_0l.SetTitle("LExp1l")
+    lexp_0l.SetLineColor(ROOT.kGreen+1)
+    lexp_0l.SetLineStyle(6)
+    lexp_0l.SetLineWidth(4)
+    lexp_0l.SetPoint(0, Xmin+3*xRange/100, Ymax-2.80*yRange/100*10)
+    lexp_0l.SetPoint(1, Xmin+10*xRange/100, Ymax-2.80*yRange/100*10)
+    lexp_0l.Draw("same")
+    textExp_0l = ROOT.TLatex(Xmin+11*xRange/100, Ymax-2.95*yRange/100*10, "Expected 0l")
+    textExp_0l.SetTextFont(42)
+    textExp_0l.SetTextSize(0.035)
+    textExp_0l.Draw()
+    
+    
+    exp_1l = getObjFromFile('data/T2bW_1l.root', 'gExpNew')
+    exp_1l.SetLineWidth(4)
+    exp_1l.SetLineStyle(3)
+    exp_1l.SetLineColor(ROOT.kBlue+1)
+    exp_1l.Draw("same")
+    
+    lexp_1l = ROOT.TGraph(2)
+    lexp_1l.SetName("LExp1l")
+    lexp_1l.SetTitle("LExp1l")
+    lexp_1l.SetLineColor(ROOT.kBlue+1)
+    lexp_1l.SetLineStyle(3)
+    lexp_1l.SetLineWidth(4)
+    lexp_1l.SetPoint(0, Xmin+3*xRange/100, Ymax-3.30*yRange/100*10)
+    lexp_1l.SetPoint(1, Xmin+10*xRange/100, Ymax-3.30*yRange/100*10)
+    lexp_1l.Draw("same")
+    textExp_1l = ROOT.TLatex(Xmin+11*xRange/100, Ymax-3.45*yRange/100*10, "Expected 1l")
+    textExp_1l.SetTextFont(42)
+    textExp_1l.SetTextSize(0.035)
+    textExp_1l.Draw()
+
+    exp_2l = getObjFromFile('data/T2bW_2l.root', 'contour_exp')
+    exp_2l.SetLineWidth(4)
+    exp_2l.SetLineStyle(4)
+    exp_2l.SetLineColor(ROOT.kOrange+1)
+    exp_2l.Draw("same")
+    
+    lexp_2l = ROOT.TGraph(2)
+    lexp_2l.SetName("LExp2l")
+    lexp_2l.SetTitle("LExp2l")
+    lexp_2l.SetLineColor(ROOT.kOrange+1)
+    lexp_2l.SetLineStyle(4)
+    lexp_2l.SetLineWidth(4)
+    lexp_2l.SetPoint(0, Xmin+3*xRange/100, Ymax-3.85*yRange/100*10)
+    lexp_2l.SetPoint(1, Xmin+10*xRange/100, Ymax-3.85*yRange/100*10)
+    lexp_2l.Draw("same")
+    textExp_2l = ROOT.TLatex(Xmin+11*xRange/100, Ymax-3.95*yRange/100*10, "Expected 2l")
+    textExp_2l.SetTextFont(42)
+    textExp_2l.SetTextSize(0.035)
+    textExp_2l.Draw()
+
+
+
+if options.signal == 'T2bt':
+
+    exp_0l = getObjFromFile('data/T2bt_0l.root', 'graph_smoothed_Exp')
+    exp_0l.SetLineWidth(4)
+    exp_0l.SetLineStyle(6)
+    exp_0l.SetLineColor(ROOT.kGreen+1)
+    exp_0l.Draw("same")
+    
+    lexp_0l = ROOT.TGraph(2)
+    lexp_0l.SetName("LExp1l")
+    lexp_0l.SetTitle("LExp1l")
+    lexp_0l.SetLineColor(ROOT.kGreen+1)
+    lexp_0l.SetLineStyle(6)
+    lexp_0l.SetLineWidth(4)
+    lexp_0l.SetPoint(0, Xmin+3*xRange/100, Ymax-2.90*yRange/100*10)
+    lexp_0l.SetPoint(1, Xmin+10*xRange/100, Ymax-2.90*yRange/100*10)
+    lexp_0l.Draw("same")
+    textExp_0l = ROOT.TLatex(Xmin+11*xRange/100, Ymax-3.05*yRange/100*10, "Expected 0l")
+    textExp_0l.SetTextFont(42)
+    textExp_0l.SetTextSize(0.035)
+    textExp_0l.Draw()
+    
+    
+    exp_1l = getObjFromFile('data/T2bt_1l.root', 'gExpNew')
+    exp_1l.SetLineWidth(4)
+    exp_1l.SetLineStyle(3)
+    exp_1l.SetLineColor(ROOT.kBlue+1)
+    exp_1l.Draw("same")
+    
+    lexp_1l = ROOT.TGraph(2)
+    lexp_1l.SetName("LExp1l")
+    lexp_1l.SetTitle("LExp1l")
+    lexp_1l.SetLineColor(ROOT.kBlue+1)
+    lexp_1l.SetLineStyle(3)
+    lexp_1l.SetLineWidth(4)
+    lexp_1l.SetPoint(0, Xmin+3*xRange/100, Ymax-3.40*yRange/100*10)
+    lexp_1l.SetPoint(1, Xmin+10*xRange/100, Ymax-3.40*yRange/100*10)
+    lexp_1l.Draw("same")
+    textExp_1l = ROOT.TLatex(Xmin+11*xRange/100, Ymax-3.55*yRange/100*10, "Expected 1l")
+    textExp_1l.SetTextFont(42)
+    textExp_1l.SetTextSize(0.035)
+    textExp_1l.Draw()
+
+
 
 xsecPlot.Save("%sXSEC" %outputname)
 
