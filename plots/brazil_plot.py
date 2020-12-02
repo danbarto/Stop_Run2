@@ -13,6 +13,7 @@ argParser.add_argument('--plot_directory',     action='store',      default='DML
 argParser.add_argument('--blinded',            action='store_true')
 argParser.add_argument('--cardDir',            action='store',      default='TTbarDM_preAppFix_DYttZflat')
 argParser.add_argument('--xsec',            action='store_true')
+argParser.add_argument('--LO',            action='store_true')
 argParser.add_argument('--logy',            action='store_true')
 args = argParser.parse_args()
 
@@ -24,10 +25,13 @@ categories = []
 mChi_list = []
 mPhi_list = []
 
-def getTTDMXSec(spin, mPhi, mChi):
+def getTTDMXSec(spin, mPhi, mChi, order='NLO'):
     import yaml
 
-    results_file = '$CMSSW_BASE/src/Stop_Run2/tools/data/xsec_DM.yml'
+    if order=='LO':
+        results_file = '$CMSSW_BASE/src/Stop_Run2/tools/data/xsec_DM_LO.yml'
+    else:
+        results_file = '$CMSSW_BASE/src/Stop_Run2/tools/data/xsec_DM.yml'
 
     with open(os.path.expandvars(results_file), 'r') as f:
         xsec = yaml.load(f)
@@ -85,7 +89,6 @@ zeros       = []
 print args.scan, tp
 
 for s in filteredResults[scanVar].tolist():
-    mass.append(s)
     if args.scan == 'mPhi':
         mChi = s
         mPhi = fixedMass
@@ -96,14 +99,32 @@ for s in filteredResults[scanVar].tolist():
         tmp = filteredResults[filteredResults[scanVar]==s]#['0.500']
         #tmpDL = filteredResultsDL[filteredResultsDL[scanVar]==s]#['0.500']
         if args.xsec:
-            xsec = float(getTTDMXSec(tp.replace('pseudo','pseudoscalar'), int(mChi), int(mPhi))['xsec']) # replacement needed for compatibilty with yaml file
+            if args.LO:
+                try:
+                    xsec = float(getTTDMXSec(tp.replace('pseudo','pseudoscalar'), int(mChi), int(mPhi), order='LO')['xsec'])
+                except TypeError:
+                    continue
+            else:
+                xsec = float(getTTDMXSec(tp.replace('pseudo','pseudoscalar'), int(mChi), int(mPhi))['xsec']) # replacement needed for compatibilty with yaml file
             print xsec, mPhi, mChi
         else:
-            xsec = 1
+            if args.LO:
+                try:
+                    xsec_LO = float(getTTDMXSec(tp.replace('pseudo','pseudoscalar'), int(mChi), int(mPhi), order='LO')['xsec'])
+                except TypeError:
+                    continue
+                xsec_NLO = float(getTTDMXSec(tp.replace('pseudo','pseudoscalar'), int(mChi), int(mPhi))['xsec'])
+                xsec = xsec_NLO/xsec_LO
+            else:
+                xsec = 1
         #xsec = 1
 
         # x-sec line
-        xsecs.append(xsec)
+        if args.LO and not args.xsec:
+            xsecs.append(1)
+        else:
+            xsecs.append(xsec)
+        mass.append(s)
 
         # expected line and bands
         exp.append(xsec*float(tmp['combined_0.500']))
@@ -311,6 +332,8 @@ if not os.path.isdir(plot_dir):
 postFix = '' if not args.xsec  else '_xsec'
 if not args.logy:
     postFix += '_linear'
+if args.LO:
+    postFix += '_LO'
 
 if not args.blinded:
     plot_dir += ('/brazil_%s_scan_%s'%(tp, args.scan) + postFix)
