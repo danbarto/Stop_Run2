@@ -102,11 +102,12 @@ for s in filteredResults[scanVar].tolist():
             if args.LO:
                 try:
                     xsec = float(getTTDMXSec(tp.replace('pseudo','pseudoscalar'), int(mChi), int(mPhi), order='LO')['xsec'])
+                    print 'LO', xsec, mPhi, mChi
                 except TypeError:
                     continue
             else:
                 xsec = float(getTTDMXSec(tp.replace('pseudo','pseudoscalar'), int(mChi), int(mPhi))['xsec']) # replacement needed for compatibilty with yaml file
-            print xsec, mPhi, mChi
+                print 'NLO', xsec, mPhi, mChi
         else:
             if args.LO:
                 try:
@@ -124,10 +125,12 @@ for s in filteredResults[scanVar].tolist():
             xsecs.append(1)
         else:
             xsecs.append(xsec)
+        print s
         mass.append(s)
 
         # expected line and bands
         exp.append(xsec*float(tmp['combined_0.500']))
+        print (xsec*float(tmp['combined_0.500']))
         try:
             expDL.append(xsec*float(tmp['2l_0.500']))
             expSL.append(xsec*float(tmp['1l_0.500']))
@@ -189,26 +192,29 @@ obs1Sigma.SetLineWidth(2)
 obs1Sigma.SetMarkerSize(0)
 #obs1Sigma.SetFillColorAlpha(ROOT.kGray, 0.5)
 
-exp.SetLineWidth(2)
+exp.SetLineWidth(4)
 exp.SetLineStyle(2)
-expDL.SetLineWidth(2)
-expDL.SetLineStyle(2)
+exp.SetLineColor(ROOT.kRed)
+
+expDL.SetLineWidth(4)
+expDL.SetLineStyle(4)
 expDL.SetLineColor(ROOT.kOrange+1)
 
-expSL.SetLineWidth(2)
-expSL.SetLineStyle(2)
-expSL.SetLineColor(ROOT.kMagenta+1)
+expSL.SetLineWidth(4)
+expSL.SetLineStyle(3)
+expSL.SetLineColor(ROOT.kBlue+1)
 
-expZL.SetLineWidth(2)
-expZL.SetLineStyle(2)
-expZL.SetLineColor(ROOT.kBlue+1)
+expZL.SetLineWidth(4)
+expZL.SetLineStyle(6)
+expZL.SetLineColor(ROOT.kMagenta+1)
 
-obs.SetLineWidth(2)
+obs.SetLineWidth(4)
 xsecs.SetLineWidth(2)
-xsecs.SetLineColor(ROOT.kRed+1)
+xsecs.SetLineColor(ROOT.kGray+1)
 #xsecs.SetLineStyle(3)
 
 can = ROOT.TCanvas("can","",700,700)
+can.SetRightMargin(0.05)
 if args.logy:
     can.SetLogy()
 if args.scan == 'mPhi' and False:
@@ -235,12 +241,14 @@ mg = ROOT.TMultiGraph()
 mg.SetTitle("Exclusion graphs")
 mg.Add(exp2Sigma)
 mg.Add(exp1Sigma)
-mg.Add(obs1Sigma)
+#mg.Add(obs1Sigma)
 y_max = 500
 y_min = 0.05
 if args.xsec:
     y_max = 500 if args.logy else 2
     y_min = 0.005
+else:
+    y_max = 500 if args.logy else 10
 #if mChi == 10:
 #    y_max = 5000
 #    y_min = 0.2
@@ -279,9 +287,9 @@ leg.SetFillColor(0)
 leg.SetLineColor(0)
 leg.SetTextSize(0.03)
 
-#leg.AddEntry(obs,"#bf{Observed}",'l')
-leg.AddEntry(obs1Sigma,"#bf{Observed #pm theory uncertainty}")
-leg.AddEntry(xsecs,"#bf{#sigma_{theory}}",'l')
+leg.AddEntry(obs,"#bf{Observed}",'l')
+#leg.AddEntry(obs1Sigma,"#bf{Observed #pm theory uncertainty}")
+#leg.AddEntry(xsecs,"#bf{#sigma_{theory}}",'l')
 leg.AddEntry(exp,"#bf{Median expected}",'l')
 leg.AddEntry(expDL,"#bf{Median expected 2l}",'l')
 leg.AddEntry(expSL,"#bf{Median expected 1l}",'l')
@@ -295,8 +303,8 @@ none = ROOT.TH1F()
 if tp == 'scalar': tp_ = 'Scalar mediator'
 elif tp == 'pseudo': tp_ = 'Pseudoscalar mediator'
 
-#extraText = ""
-extraText = "Preliminary"
+extraText = ""
+#extraText = "Preliminary"
 
 latex2 = ROOT.TLatex()
 latex2.SetNDC()
@@ -309,7 +317,7 @@ elif args.scan == 'mChi' and args.spin == 'pseudo':
 else:
     latex2.DrawLatex(0.33,0.89,'#bf{'+tp_+', Dirac DM, m_{#chi} = '+str(fixedMass)+' GeV}')
 
-latex2.DrawLatex(0.33,0.85,'#bf{g_{q} = 1, g_{DM} = 1}')
+latex2.DrawLatex(0.33,0.85,'#bf{g_{q} = 1, g_{DM} = 1, %s}'%("LO" if args.LO else "NLO"))
 
 latex2.DrawLatex(0.33,0.80,'#bf{95% CL upper limits}')
 #latex2.DrawLatex(0.22,0.84,'#bf{m_{#chi} = '+str(mChi)+' GeV, g_{q} = 1, g_{#chi} = 1}')
