@@ -203,7 +203,7 @@ hists["obs_UL"].Clone("temperature").Write()
 
 contourPoints = {}
 
-for i in ["exp", "exp_up", "exp_down", "obs", "obs_up", "obs_down", "obs"]:
+for i in ["exp", "exp_up", "exp_down", "obs", "obs_up", "obs_down"]:
     c1 = ROOT.TCanvas()
     # get ALL the contours
     contours = getContours(hists[i + "_smooth"], plotDir)
