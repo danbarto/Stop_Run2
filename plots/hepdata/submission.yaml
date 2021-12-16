@@ -1,0 +1,48 @@
+---
+additional_resources: # additional references (e.g. experiment TWiki page for analysis)
+  - {location: "http://cms-results.web.cern.ch/cms-results/public-results/publications/SUS-20-002/index.html", description: "web page with auxiliary material"}
+
+comment: | # preserve newlines
+  Stop combination
+
+---
+# Start a new YAML document to indicate a new data table.
+name: "Figure 9a (expected upper limit)"
+location: Data from Page 15
+description: 95% CL expected upper limit on top squark cross section for the top squark -> top quark LSP model.
+keywords: # used for searching, possibly multiple values for each keyword
+  - {name: reactions, values: [P P --> stop stop]}
+  - {name: observables, values: [SIG]}
+  - {name: cmenergies, values: [6500.0]} # centre-of-mass energy in GeV
+  - {name: phrases, values: [Top squark, Stop]}
+data_file: expected_T2tt.yaml
+---
+name: "Figure 9a (observed upper limit)"
+location: Data from Page 15
+description: 95% CL observed upper limit on top squark cross section for the top squark -> top quark LSP model.
+keywords: # used for searching, possibly multiple values for each keyword
+  - {name: reactions, values: [P P --> stop stop]}
+  - {name: observables, values: [SIG]}
+  - {name: cmenergies, values: [6500.0]} # centre-of-mass energy in GeV
+  - {name: phrases, values: [Top squark, Stop]}
+data_file: observed_T2tt.yaml
+---
+name: "Figure 9a (expected limit contour)"
+location: Data from Page 15
+description: .
+keywords: # used for searching, possibly multiple values for each keyword
+  - {name: reactions, values: [P P --> stop stop]}
+  - {name: observables, values: [SIG]}
+  - {name: cmenergies, values: [6500.0]} # centre-of-mass energy in GeV
+  - {name: phrases, values: [Top squark, Stop]}
+data_file: contour_T2tt_exp.yaml
+---
+name: "Figure 9a (observed limit contour)"
+location: Data from Page 15
+description: Expected limits for T2tt model.
+keywords: # used for searching, possibly multiple values for each keyword
+  - {name: reactions, values: [P P --> stop stop]}
+  - {name: observables, values: [SIG]}
+  - {name: cmenergies, values: [6500.0]} # centre-of-mass energy in GeV
+  - {name: phrases, values: [Top squark, Stop]}
+data_file: contour_T2tt_obs.yaml
