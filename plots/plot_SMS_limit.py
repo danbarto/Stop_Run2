@@ -518,3 +518,99 @@ brazilPlot = smsPlotBrazil(modelname, fileIN.HISTOGRAM, fileIN.OBSERVED, fileIN.
 brazilPlot.Draw()
 brazilPlot.Save("%sBAND" %outputname)
 
+template_2D = {
+    'independent_variables': [
+        {
+            'header': {"name": "x-axis", "units": "GeV"},
+            'values': [],
+        },
+        {
+            'header': {"name": "y-axis", "units": "GeV"},
+            'values': [],
+        },],
+    'dependent_variables': [
+        {
+            'header': {"name": "actual values", "units": "pb"},
+            'values': [],
+        }
+
+    ]
+}
+
+template_1D = {
+    'independent_variables': [
+        {
+            'header': {"name": "x-axis", "units": "GeV"},
+            'values': [],
+        },
+        ],
+    'dependent_variables': [
+        {
+            'header': {"name": "actual values", "units": "pb"},
+            'values': [],
+        }
+
+    ]
+}
+
+
+import copy
+from yaml import load, dump
+
+try:
+    from yaml import CLoader as Loader, CDumper as Dumper
+except ImportError:
+    from yaml import Loader, Dumper
+
+def contour_to_hepdata(contour_dict, sel='exp'):
+    tmp = copy.deepcopy(template_1D)
+    for j in contour_dict[sel]:
+        for point in contour_dict[sel][j]:
+            m_stop = float(point['x'])
+            m_lsp  = float(point['y'])
+            tmp['independent_variables'][0]['values'].append({'value': m_stop})
+            tmp['dependent_variables'][0]['values'].append({'value': m_lsp})
+
+    f_out = 'hepdata/contour_%s_%s.yaml'%(options.signal, sel)
+    with open(f_out, 'w') as f:
+        dump(tmp, f, Dumper=Dumper)
+
+    return f_out
+
+hepdata = True
+if hepdata:
+
+    for sel in ['exp', 'obs']:
+        contour_to_hepdata(contourPoints, sel)
+
+    exp_yaml = copy.deepcopy(template_2D)
+    obs_yaml = copy.deepcopy(template_2D)
+
+    for m_stop, m_lsp, exp, obs in zip(
+            results_df['mStop'].tolist(),
+            results_df['mStop'].tolist(),
+            results_df['0.500'].tolist(),
+            results_df['-1.000'].tolist(),
+    ):
+        xsec = xSecSusy_.getXSec(
+            channel='stop13TeV',
+            mass=m_stop,
+            sigma=0,
+        )
+
+        # expected
+        exp_yaml['independent_variables'][0]['values'].append({'value': m_stop})
+        exp_yaml['independent_variables'][1]['values'].append({'value': m_lsp})
+        exp_yaml['dependent_variables'][0]['values'].append({'value': exp*xsec})
+        # observed
+        obs_yaml['independent_variables'][0]['values'].append({'value': m_stop})
+        obs_yaml['independent_variables'][1]['values'].append({'value': m_lsp})
+        obs_yaml['dependent_variables'][0]['values'].append({'value': obs*xsec})
+
+
+    f_out = 'hepdata/expected_%s.yaml'%options.signal
+    with open(f_out, 'w') as f:
+        dump(exp_yaml, f, Dumper=Dumper)
+    f_out = 'hepdata/observed_%s.yaml'%options.signal
+    with open(f_out, 'w') as f:
+        dump(obs_yaml, f, Dumper=Dumper)
