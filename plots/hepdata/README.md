@@ -9,3 +9,5 @@ Validate
 ```
 hepdata-validate -a submission.tgz
 ```
+
+Link to hepdata validation tools: [documentation](https://hepdata-validator.readthedocs.io/en/latest/#command-line)
