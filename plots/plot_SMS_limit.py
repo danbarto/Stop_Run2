@@ -588,7 +588,7 @@ if hepdata:
 
     for m_stop, m_lsp, exp, obs in zip(
             results_df['mStop'].tolist(),
-            results_df['mStop'].tolist(),
+            results_df['mLSP'].tolist(),
             results_df['0.500'].tolist(),
             results_df['-1.000'].tolist(),
     ):

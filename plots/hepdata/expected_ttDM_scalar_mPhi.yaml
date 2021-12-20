@@ -1,0 +1,16 @@
+dependent_variables:
+- header: {name: actual values, units: pb}
+  values:
+  - {value: 0.17250938613180053}
+  - {value: 0.21431514573213042}
+  - {value: 0.3623412124753937}
+  - {value: 0.5778556034482759}
+  - {value: 2.2155378259551246}
+independent_variables:
+- header: {name: x-axis, units: GeV}
+  values:
+  - {value: 50}
+  - {value: 100}
+  - {value: 200}
+  - {value: 300}
+  - {value: 500}

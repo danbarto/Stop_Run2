@@ -85,10 +85,38 @@ zeros       = []
 
 #from StopsDilepton.tools.xSecDM import *
 #xSecDM_ = xSecDM()
+template_1D = {
+    'independent_variables': [
+        {
+            'header': {"name": "x-axis", "units": "GeV"},
+            'values': [],
+        },
+        ],
+    'dependent_variables': [
+        {
+            'header': {"name": "actual values", "units": "pb"},
+            'values': [],
+        }
+
+    ]
+}
+
+
+import copy
+from yaml import load, dump
+
+try:
+    from yaml import CLoader as Loader, CDumper as Dumper
+except ImportError:
+    from yaml import Loader, Dumper
 
 print args.scan, tp
 
+exp_yaml = copy.deepcopy(template_1D)
+obs_yaml = copy.deepcopy(template_1D)
+
 for s in filteredResults[scanVar].tolist():
+
     if args.scan == 'mPhi':
         mChi = s
         mPhi = fixedMass
@@ -150,12 +178,24 @@ for s in filteredResults[scanVar].tolist():
         #obsUp.append(xsec*res[(s[0],s[1],s[2])]['-1.000']*math.sqrt(0.3**2 + (xSecDM_.getXSec(tp,s[1],s[0],sigma=1)/xSecDM_.getXSec(tp,s[1],s[0]) - 1)**2))
         #obsDown.append(xsec*res[(s[0],s[1],s[2])]['-1.000']*math.sqrt(0.3**2 + (1 - xSecDM_.getXSec(tp,s[1],s[0],sigma=-1)/xSecDM_.getXSec(tp,s[1],s[0]))**2))
 
+        exp_yaml['independent_variables'][0]['values'].append({'value': mChi})
+        exp_yaml['dependent_variables'][0]['values'].append({'value': xsec*float(tmp['combined_0.500'])})
+        obs_yaml['independent_variables'][0]['values'].append({'value': mChi})
+        obs_yaml['dependent_variables'][0]['values'].append({'value': xsec*float(tmp['combined_-1.000'])})
+
         # technicality
         zeros.append(0)
 
 
     except KeyError:
         print "Result not found for"
+
+f_out = 'hepdata/expected_ttDM_%s_%s.yaml'%(tp, args.scan)
+with open(f_out, 'w') as f:
+    dump(exp_yaml, f, Dumper=Dumper)
+f_out = 'hepdata/observed_ttDM_%s_%s.yaml'%(tp, args.scan)
+with open(f_out, 'w') as f:
+    dump(obs_yaml, f, Dumper=Dumper)
 
 #raise NotImplementedError
 
