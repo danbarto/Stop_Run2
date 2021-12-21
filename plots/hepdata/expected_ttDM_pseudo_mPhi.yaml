@@ -1,13 +1,13 @@
 dependent_variables:
-- header: {name: actual values, units: pb}
+- header: {name: 'sigma/sigma_{theory}', units: '-'}
   values:
-  - {value: 0.18993030894886362}
-  - {value: 0.21434485394021738}
-  - {value: 0.2886215685821193}
-  - {value: 0.46537974683544303}
-  - {value: 2.334699726418749}
+  - {value: '0.19'}
+  - {value: '0.214'}
+  - {value: '0.289'}
+  - {value: '0.465'}
+  - {value: '2.33'}
 independent_variables:
-- header: {name: x-axis, units: GeV}
+- header: {name: mediator mass, units: GeV}
   values:
   - {value: 50}
   - {value: 100}

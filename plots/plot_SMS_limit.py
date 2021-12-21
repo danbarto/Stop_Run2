@@ -562,14 +562,16 @@ try:
 except ImportError:
     from yaml import Loader, Dumper
 
-def contour_to_hepdata(contour_dict, sel='exp'):
+def contour_to_hepdata(contour_dict, sel='exp', xaxis="m_{stop}", yaxis="m_{LSP}"):
     tmp = copy.deepcopy(template_1D)
+    tmp['independent_variables'][0]['header']['name'] = xaxis
+    tmp['dependent_variables'][0]['header']['name'] = yaxis
     for j in contour_dict[sel]:
         for point in contour_dict[sel][j]:
             m_stop = float(point['x'])
             m_lsp  = float(point['y'])
-            tmp['independent_variables'][0]['values'].append({'value': m_stop})
-            tmp['dependent_variables'][0]['values'].append({'value': m_lsp})
+            tmp['independent_variables'][0]['values'].append({'value': "%.4g"%m_stop})
+            tmp['dependent_variables'][0]['values'].append({'value': "%.4g"%m_lsp})
 
     f_out = 'hepdata/contour_%s_%s.yaml'%(options.signal, sel)
     with open(f_out, 'w') as f:
@@ -601,11 +603,18 @@ if hepdata:
         # expected
         exp_yaml['independent_variables'][0]['values'].append({'value': m_stop})
         exp_yaml['independent_variables'][1]['values'].append({'value': m_lsp})
-        exp_yaml['dependent_variables'][0]['values'].append({'value': exp*xsec})
+        exp_yaml['dependent_variables'][0]['values'].append({'value': "%.3g"%(exp*xsec)})
+        exp_yaml['independent_variables'][0]['header']['name'] = "m_{stop}"
+        exp_yaml['independent_variables'][1]['header']['name'] = "m_{LSP}"
+        exp_yaml['dependent_variables'][0]['header']['name'] = "95% CL upper limit on cross section"
+
         # observed
         obs_yaml['independent_variables'][0]['values'].append({'value': m_stop})
         obs_yaml['independent_variables'][1]['values'].append({'value': m_lsp})
-        obs_yaml['dependent_variables'][0]['values'].append({'value': obs*xsec})
+        obs_yaml['dependent_variables'][0]['values'].append({'value': "%.3g"%(obs*xsec)})
+        obs_yaml['independent_variables'][0]['header']['name'] = "m_{stop}"
+        obs_yaml['independent_variables'][1]['header']['name'] = "m_{LSP}"
+        obs_yaml['dependent_variables'][0]['header']['name'] = "95% CL upper limit on cross section"
 
 
     f_out = 'hepdata/expected_%s.yaml'%options.signal

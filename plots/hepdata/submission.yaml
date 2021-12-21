@@ -9,7 +9,7 @@ comment: | # preserve newlines
 # Start a new YAML document to indicate a new data table.
 name: "Figure 9a (expected upper limit)"
 location: Data from Page 15
-description: 95% CL expected upper limit on top squark cross section for the top squark -> top quark LSP model.
+description: 95% CL expected upper limit on top squark cross section for the direct decay model.
 keywords: # used for searching, possibly multiple values for each keyword
   - {name: reactions, values: [P P --> stop stop]}
   - {name: observables, values: [SIG]}
@@ -19,7 +19,7 @@ data_file: expected_T2tt.yaml
 ---
 name: "Figure 9a (observed upper limit)"
 location: Data from Page 15
-description: 95% CL observed upper limit on top squark cross section for the top squark -> top quark LSP model.
+description: 95% CL observed upper limit on top squark cross section for the direct decay model.
 keywords: # used for searching, possibly multiple values for each keyword
   - {name: reactions, values: [P P --> stop stop]}
   - {name: observables, values: [SIG]}
@@ -29,7 +29,7 @@ data_file: observed_T2tt.yaml
 ---
 name: "Figure 9a (expected limit contour)"
 location: Data from Page 15
-description: .
+description: Contour of the region excluded with 95% CL (expected).
 keywords: # used for searching, possibly multiple values for each keyword
   - {name: reactions, values: [P P --> stop stop]}
   - {name: observables, values: [SIG]}
@@ -39,7 +39,7 @@ data_file: contour_T2tt_exp.yaml
 ---
 name: "Figure 9a (observed limit contour)"
 location: Data from Page 15
-description: Expected limits for T2tt model.
+description: Contour of the region excluded with 95% CL (observed).
 keywords: # used for searching, possibly multiple values for each keyword
   - {name: reactions, values: [P P --> stop stop]}
   - {name: observables, values: [SIG]}
@@ -49,7 +49,7 @@ data_file: contour_T2tt_obs.yaml
 ---
 name: "Figure 9b (expected upper limit)"
 location: Data from Page 15
-description: 95% CL expected upper limit on top squark cross section for the top squark -> top quark LSP model.
+description: 95% CL expected upper limit on top squark cross section for the cascade decay model.
 keywords: # used for searching, possibly multiple values for each keyword
   - {name: reactions, values: [P P --> stop stop]}
   - {name: observables, values: [SIG]}
@@ -59,7 +59,7 @@ data_file: expected_T2bW.yaml
 ---
 name: "Figure 9b (observed upper limit)"
 location: Data from Page 15
-description: 95% CL observed upper limit on top squark cross section for the top squark -> top quark LSP model.
+description: 95% CL observed upper limit on top squark cross section for the cascade decay model.
 keywords: # used for searching, possibly multiple values for each keyword
   - {name: reactions, values: [P P --> stop stop]}
   - {name: observables, values: [SIG]}
@@ -69,7 +69,7 @@ data_file: observed_T2bW.yaml
 ---
 name: "Figure 9b (expected limit contour)"
 location: Data from Page 15
-description: .
+description: Contour of the region excluded with 95% CL (expected).
 keywords: # used for searching, possibly multiple values for each keyword
   - {name: reactions, values: [P P --> stop stop]}
   - {name: observables, values: [SIG]}
@@ -79,7 +79,7 @@ data_file: contour_T2bW_exp.yaml
 ---
 name: "Figure 9b (observed limit contour)"
 location: Data from Page 15
-description: Expected limits for T2bW model.
+description: Contour of the region excluded with 95% CL (observed).
 keywords: # used for searching, possibly multiple values for each keyword
   - {name: reactions, values: [P P --> stop stop]}
   - {name: observables, values: [SIG]}
@@ -89,7 +89,7 @@ data_file: contour_T2bW_obs.yaml
 ---
 name: "Figure 9c (expected upper limit)"
 location: Data from Page 15
-description: 95% CL expected upper limit on top squark cross section for the top squark -> top quark LSP model.
+description: 95% CL expected upper limit on top squark cross section for the mixed decay model.
 keywords: # used for searching, possibly multiple values for each keyword
   - {name: reactions, values: [P P --> stop stop]}
   - {name: observables, values: [SIG]}
@@ -99,7 +99,7 @@ data_file: expected_T2bt.yaml
 ---
 name: "Figure 9c (observed upper limit)"
 location: Data from Page 15
-description: 95% CL observed upper limit on top squark cross section for the top squark -> top quark LSP model.
+description: 95% CL observed upper limit on top squark cross section for the mixed decay model.
 keywords: # used for searching, possibly multiple values for each keyword
   - {name: reactions, values: [P P --> stop stop]}
   - {name: observables, values: [SIG]}
@@ -109,7 +109,7 @@ data_file: observed_T2bt.yaml
 ---
 name: "Figure 9c (expected limit contour)"
 location: Data from Page 15
-description: .
+description: Contour of the region excluded with 95% CL (expected).
 keywords: # used for searching, possibly multiple values for each keyword
   - {name: reactions, values: [P P --> stop stop]}
   - {name: observables, values: [SIG]}
@@ -119,7 +119,7 @@ data_file: contour_T2bt_exp.yaml
 ---
 name: "Figure 9c (observed limit contour)"
 location: Data from Page 15
-description: Expected limits for T2bt model.
+description: Contour of the region excluded with 95% CL (observed).
 keywords: # used for searching, possibly multiple values for each keyword
   - {name: reactions, values: [P P --> stop stop]}
   - {name: observables, values: [SIG]}
@@ -127,42 +127,42 @@ keywords: # used for searching, possibly multiple values for each keyword
   - {name: phrases, values: [Top squark, Stop]}
 data_file: contour_T2bt_obs.yaml
 ---
-name: "Figure 10a (expected upper limit)"
-location: Data from Page 15
-description: 95% CL expected upper limit on top squark cross section for the top squark -> top quark LSP model.
+name: "Figure 10a (expected limit)"
+location: Data from Page 16
+description: 95% CL expected limit on $\sigma/\sigma_{theory}$ for a fermionic DM particle with m = 1 GeV, as a function of the mediator mass for a scalar.
 keywords: # used for searching, possibly multiple values for each keyword
-  - {name: reactions, values: [P P --> stop stop]}
+  - {name: reactions, values: [P P --> t t phi]}
   - {name: observables, values: [SIG]}
   - {name: cmenergies, values: [6500.0]} # centre-of-mass energy in GeV
-  - {name: phrases, values: [Top squark, Stop]}
+  - {name: phrases, values: [Top quark, scalar, DM]}
 data_file: expected_ttDM_scalar_mPhi.yaml
 ---
-name: "Figure 10a (observed upper limit)"
-location: Data from Page 15
-description: 95% CL observed upper limit on top squark cross section for the top squark -> top quark LSP model.
+name: "Figure 10a (observed limit)"
+location: Data from Page 16
+description: 95% CL observed limit on $\sigma/\sigma_{theory}$ for a fermionic DM particle with m = 1 GeV, as a function of the mediator mass for a scalar.
 keywords: # used for searching, possibly multiple values for each keyword
-  - {name: reactions, values: [P P --> stop stop]}
+  - {name: reactions, values: [P P --> t t phi]}
   - {name: observables, values: [SIG]}
   - {name: cmenergies, values: [6500.0]} # centre-of-mass energy in GeV
-  - {name: phrases, values: [Top squark, Stop]}
+  - {name: phrases, values: [Top quark, scalar, DM]}
 data_file: observed_ttDM_scalar_mPhi.yaml
 ---
-name: "Figure 10b (expected upper limit)"
-location: Data from Page 15
-description: 95% CL expected upper limit on top squark cross section for the top squark -> top quark LSP model.
+name: "Figure 10b (expected limit)"
+location: Data from Page 16
+description: 95% CL expected limit on $\sigma/\sigma_{theory}$ for a fermionic DM particle with m = 1 GeV, as a function of the mediator mass for a pseudoscalar.
 keywords: # used for searching, possibly multiple values for each keyword
-  - {name: reactions, values: [P P --> stop stop]}
+  - {name: reactions, values: [P P --> t t a]}
   - {name: observables, values: [SIG]}
   - {name: cmenergies, values: [6500.0]} # centre-of-mass energy in GeV
-  - {name: phrases, values: [Top squark, Stop]}
+  - {name: phrases, values: [Top quark, pseudoscalar, DM]}
 data_file: expected_ttDM_pseudo_mPhi.yaml
 ---
-name: "Figure 10b (observed upper limit)"
-location: Data from Page 15
-description: 95% CL observed upper limit on top squark cross section for the top squark -> top quark LSP model.
+name: "Figure 10b (observed limit)"
+location: Data from Page 16
+description: 95% CL observed limit on $\sigma/\sigma_{theory}$ for a fermionic DM particle with m = 1 GeV, as a function of the mediator mass for a pseudoscalar.
 keywords: # used for searching, possibly multiple values for each keyword
-  - {name: reactions, values: [P P --> stop stop]}
+  - {name: reactions, values: [P P --> t t a]}
   - {name: observables, values: [SIG]}
   - {name: cmenergies, values: [6500.0]} # centre-of-mass energy in GeV
-  - {name: phrases, values: [Top squark, Stop]}
+  - {name: phrases, values: [Top quark, pseudoscalar, DM]}
 data_file: observed_ttDM_pseudo_mPhi.yaml

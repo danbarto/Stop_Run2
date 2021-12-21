@@ -115,6 +115,14 @@ print args.scan, tp
 exp_yaml = copy.deepcopy(template_1D)
 obs_yaml = copy.deepcopy(template_1D)
 
+exp_yaml['independent_variables'][0]['header']['name'] = 'mediator mass'
+obs_yaml['independent_variables'][0]['header']['name'] = 'mediator mass'
+
+exp_yaml['dependent_variables'][0]['header']['name'] = 'sigma/sigma_{theory}'
+obs_yaml['dependent_variables'][0]['header']['name'] = 'sigma/sigma_{theory}'
+exp_yaml['dependent_variables'][0]['header']['units'] = '-'
+obs_yaml['dependent_variables'][0]['header']['units'] = '-'
+
 for s in filteredResults[scanVar].tolist():
 
     if args.scan == 'mPhi':
@@ -179,9 +187,9 @@ for s in filteredResults[scanVar].tolist():
         #obsDown.append(xsec*res[(s[0],s[1],s[2])]['-1.000']*math.sqrt(0.3**2 + (1 - xSecDM_.getXSec(tp,s[1],s[0],sigma=-1)/xSecDM_.getXSec(tp,s[1],s[0]))**2))
 
         exp_yaml['independent_variables'][0]['values'].append({'value': mChi})
-        exp_yaml['dependent_variables'][0]['values'].append({'value': xsec*float(tmp['combined_0.500'])})
+        exp_yaml['dependent_variables'][0]['values'].append({'value': "%.3g"%(xsec*float(tmp['combined_0.500']))})
         obs_yaml['independent_variables'][0]['values'].append({'value': mChi})
-        obs_yaml['dependent_variables'][0]['values'].append({'value': xsec*float(tmp['combined_-1.000'])})
+        obs_yaml['dependent_variables'][0]['values'].append({'value': "%.3g"%(xsec*float(tmp['combined_-1.000']))})
 
         # technicality
         zeros.append(0)
